@@ -5,12 +5,18 @@
 /// </summary>
 public sealed class HtmlDocument : Node
 {
-    public HtmlDocument()
+    public HtmlDocument() : this(He.Head(), He.Body()) { }
+
+    public HtmlDocument(He head, He body)
     {
+        if (head.Tag.Value != Tags.Head.Value)
+            throw new ArgumentException("head parameter must be a head element", nameof(head));
+        if (body.Tag.Value != Tags.Body.Value)
+            throw new ArgumentException("head parameter must be a head element", nameof(head));
         DocType = He.DocType();
         Html = new He(Tags.Html);
-        Head = new He(Tags.Head);
-        Body = new He(Tags.Body);
+        Head = head;
+        Body = body;
         Html.Add(Head);
         Html.Add(Body);
     }

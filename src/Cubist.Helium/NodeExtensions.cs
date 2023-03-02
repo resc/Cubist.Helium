@@ -1,5 +1,4 @@
 ﻿using System.Collections.Concurrent;
-using System.Security.Cryptography.X509Certificates;
 
 namespace Cubist.Helium;
 
@@ -53,16 +52,6 @@ public static class NodeExtensions
     public static void WriteIndent(this TextWriter w, int level)
         => w.Write(_indents.GetOrAdd(level, l => new string(' ', l * 2)));
 
-    public static string PrettyPrint(this Node n)
-    {
-        var sw = new StringWriter();
-        n.PrettyPrintTo(sw, 0);
-        return sw.ToString();
-    }
-
-    public static void PrettyPrintTo(this Node n, TextWriter w)
-        => n.PrettyPrintTo(w, 0);
-
     public static void WriteStartTag(this He he, TextWriter w)
     {
         he.Tag.WriteStartBegin(w);
@@ -75,6 +64,17 @@ public static class NodeExtensions
     {
         he.Tag.WriteClose(w);
     }
+
+    public static string PrettyPrint(this Node n)
+    {
+        var sw = new StringWriter();
+        n.PrettyPrintTo(sw, 0);
+        return sw.ToString();
+    }
+
+    public static void PrettyPrintTo(this Node n, TextWriter w)
+        => n.PrettyPrintTo(w, 0);
+
 
     public static void PrettyPrintTo(this Node n, TextWriter w, int level)
     {
@@ -145,7 +145,7 @@ public static class NodeExtensions
             attr.WriteTo(w);
         he.Tag.WriteStartEnd(w);
 
-        if (he.Count == 0 || he.All(x => x is Text or CData || (x is He e && e.IsInline())))
+        if (he.Count == 0 || he.All(x => x is Text or CData))
         {
             foreach (var child in he)
                 child.PrettyPrintTo(w, level + 1);
@@ -153,7 +153,8 @@ public static class NodeExtensions
             if (!he.Tag.IsVoid())
             {
                 he.Tag.WriteClose(w);
-                w.WriteLine();
+                if (!he.IsInline())
+                    w.WriteLine();
             }
         }
         else
@@ -162,14 +163,24 @@ public static class NodeExtensions
 
             foreach (var child in he)
             {
+                if (child is He x && x.IsInline())
+                    w.WriteIndent(level+1);
+
                 child.PrettyPrintTo(w, level + 1);
+                {
+                    if (child is He e && e.Tag.IsVoid())
+                    {
+                        w.WriteLine();
+                    }
+                }
             }
 
             if (!he.Tag.IsVoid())
             {
                 w.WriteIndent(level);
                 he.Tag.WriteClose(w);
-                w.WriteLine();
+                if (!he.IsInline())
+                    w.WriteLine();
             }
         }
     }
@@ -184,14 +195,22 @@ public static class NodeExtensions
         doc.Head.WriteStartTag(w);
         w.WriteLine();
         foreach (var child in doc.Head)
+        {
             child.PrettyPrintTo(w, 1);
+            if (child is He e && e.Tag.IsVoid())
+                w.WriteLine();
+        }
         doc.Head.WriteCloseTag(w);
         w.WriteLine();
 
         doc.Body.WriteStartTag(w);
         w.WriteLine();
         foreach (var child in doc.Body)
+        {
             child.PrettyPrintTo(w, 1);
+            if (child is He e && e.Tag.IsVoid())
+                w.WriteLine();
+        }
 
         doc.Body.WriteCloseTag(w);
         w.WriteLine();

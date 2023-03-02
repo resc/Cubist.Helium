@@ -2,6 +2,9 @@
 
 public static class Tags
 {
+    ///<summary> document type declaration </summary>
+    public static Tag DocType { get; } = new(@"!DOCTYPE", TagOptions.Html5 | TagOptions.Void);
+
     ///<summary>hyperlink </summary>
     public static Tag A { get; } = "a";
 
@@ -17,7 +20,7 @@ public static class Tags
     ///<summary>article </summary>
     public static Tag Article { get; } = "article";
 
-    ///<summary>tangential content </summary>
+    ///<summary> aside tangential content </summary>
     public static Tag Aside { get; } = "aside";
 
     ///<summary>audio stream </summary>
@@ -46,9 +49,11 @@ public static class Tags
 
     ///<summary>button</summary>
     /// <remarks>
-    /// ⓘ button type=submit – submit button
-    /// ⓘ button type=reset – reset button
-    /// ⓘ button type=button – button with no additional semantics
+    /// <list>
+    /// <item><term> button type=submit </term><description> submit button</description></item>
+    /// <item><term> button type=reset </term><description> reset button</description></item>
+    /// <item><term> button type=button </term><description> button with no additional semantics</description></item>
+    /// </list>
     /// </remarks>
     public static Tag Button { get; } = "button";
 
@@ -70,13 +75,8 @@ public static class Tags
     ///<summary>table column group</summary>
     public static Tag Colgroup { get; } = "colgroup";
 
-    ///<summary>command </summary>
-    /// <remarks>
-    /// ⓘ command type=command – command with an associated action 
-    /// ⓘ command type=radio – selection of one item from a list of items 
-    /// ⓘ command type=checkbox – state or option that can be toggled 
-    /// </remarks>
-    public static Tag Command { get; } = "command";
+    ///<summary> used to add a machine-readable translation of a given content </summary>
+    public static Tag Data { get; } = "data";
 
     ///<summary>predefined options for other controls </summary>
     public static Tag Datalist { get; } = "datalist";
@@ -92,6 +92,9 @@ public static class Tags
 
     ///<summary>defining instance</summary>
     public static Tag Dfn { get; } = "dfn";
+
+    ///<summary>defines a dialog box or sub-window</summary>
+    public static Tag Dialog { get; } = "dialog";
 
     ///<summary>generic flow container</summary>
     public static Tag Div { get; } = "div";
@@ -147,9 +150,6 @@ public static class Tags
     ///<summary>header </summary>
     public static Tag Header { get; } = "header";
 
-    ///<summary>heading group </summary>
-    public static Tag Hgroup { get; } = "hgroup";
-
     ///<summary>thematic break </summary>
     public static Tag Hr { get; } = "hr";
 
@@ -167,29 +167,31 @@ public static class Tags
 
     ///<summary>input control </summary>
     /// <remarks>
-    /// ⓘ input type=text – text-input field
-    /// ⓘ input type=password – password-input field
-    /// ⓘ input type=checkbox – checkbox
-    /// ⓘ input type=radio – radio button
-    /// ⓘ input type=button – button
-    /// ⓘ input type=submit – submit button
-    /// ⓘ input type=reset – reset button
-    /// ⓘ input type=file – file upload control
-    /// ⓘ input type=hidden – hidden input control
-    /// ⓘ input type=image – image-coordinates input control
-    /// ⓘ input type=datetime – global date-and-time input control 
-    /// ⓘ input type=datetime-local – local date-and-time input control 
-    /// ⓘ input type=date – date input control 
-    /// ⓘ input type=month – year-and-month input control 
-    /// ⓘ input type=time – time input control 
-    /// ⓘ input type=week – year-and-week input control 
-    /// ⓘ input type=number – number input control 
-    /// ⓘ input type=range – imprecise number-input control 
-    /// ⓘ input type=email – e-mail address input control 
-    /// ⓘ input type=url – URL input control 
-    /// ⓘ input type=search – search field 
-    /// ⓘ input type=tel – telephone-number-input field 
-    /// ⓘ input type=color – color-well control 
+    /// <list>
+    ///   <item><term>input type=text</term><description>text-input field</description></item>
+    ///   <item><term>input type=password</term><description>password-input field</description></item>
+    ///   <item><term>input type=checkbox</term><description>checkbox</description></item>
+    ///   <item><term>input type=radio</term><description>radio button</description></item>
+    ///   <item><term>input type=button</term><description>button</description></item>
+    ///   <item><term>input type=submit</term><description>submit button</description></item>
+    ///   <item><term>input type=reset</term><description>reset button</description></item>
+    ///   <item><term>input type=file</term><description>file upload control</description></item>
+    ///   <item><term>input type=hidden</term><description>hidden input control</description></item>
+    ///   <item><term>input type=image</term><description>image-coordinates input control</description></item>
+    ///   <item><term>input type=datetime</term><description>global date-and-time input control </description></item>
+    ///   <item><term>input type=datetime-local</term><description>local date-and-time input control </description></item>
+    ///   <item><term>input type=date</term><description>date input control </description></item>
+    ///   <item><term>input type=month</term><description>year-and-month input control </description></item>
+    ///   <item><term>input type=time</term><description>time input control </description></item>
+    ///   <item><term>input type=week</term><description>year-and-week input control </description></item>
+    ///   <item><term>input type=number</term><description>number input control </description></item>
+    ///   <item><term>input type=range</term><description>imprecise number-input control </description></item>
+    ///   <item><term>input type=email</term><description>e-mail address input control </description></item>
+    ///   <item><term>input type=url</term><description>URL input control </description></item>
+    ///   <item><term>input type=search</term><description>search field </description></item>
+    ///   <item><term>input type=tel</term><description>telephone-number-input field </description></item>
+    ///   <item><term>input type=color</term><description>color-well control </description></item>
+    /// </list>
     /// </remarks>
     public static Tag Input { get; } = "input";
 
@@ -198,9 +200,6 @@ public static class Tags
 
     ///<summary>user input</summary>
     public static Tag Kbd { get; } = "kbd";
-
-    ///<summary>key-pair generator/input control </summary>
-    public static Tag Keygen { get; } = "keygen";
 
     ///<summary>caption for a form control</summary>
     public static Tag Label { get; } = "label";
@@ -214,22 +213,24 @@ public static class Tags
     ///<summary>inter-document relationship metadata</summary>
     public static Tag Link { get; } = "link";
 
+    ///<summary> specifies the main content of a document </summary>
+    public static Tag Main { get; } = "main";
+
     ///<summary>image-map definition</summary>
     public static Tag Map { get; } = "map";
 
     ///<summary>marked (highlighted) text </summary>
     public static Tag Mark { get; } = "mark";
 
-    ///<summary>list of commands </summary>
-    public static Tag Menu { get; } = "menu";
-
     ///<summary>metadata </summary>
     /// <remarks>
-    /// ⓘ meta name – name-value metadata
-    /// ⓘ meta http-equiv=refresh – “refresh” pragma directive
-    /// ⓘ meta http-equiv=default-style – “preferred stylesheet” pragma directive
-    /// ⓘ meta charset – document character-encoding declaration 
-    /// ⓘ meta http-equiv=content-type – document character-encoding declaration
+    /// <list>
+    ///   <item><term>meta name</term><description>name-value metadata</description></item>
+    ///   <item><term>meta http-equiv=refresh</term><description>“refresh” pragma directive</description></item>
+    ///   <item><term>meta http-equiv=default-style</term><description>“preferred stylesheet” pragma directive</description></item>
+    ///   <item><term>meta http-equiv=content-type</term><description>document character-encoding declaration </description></item>
+    ///   <item><term>meta charset</term><description>document character-encoding declaration </description></item>
+    /// </list>
     /// </remarks>
     public static Tag Meta { get; } = "meta";
 
@@ -262,6 +263,9 @@ public static class Tags
 
     ///<summary>initialization parameters for plugins</summary>
     public static Tag Param { get; } = "param";
+
+    ///<summary> gives flexibility in specifying image resources</summary>
+    public static Tag Picture { get; } = "picture";
 
     ///<summary>pre-formatted text</summary>
     public static Tag Pre { get; } = "pre";
@@ -297,6 +301,9 @@ public static class Tags
     ///<summary>option-selection form control</summary>
     public static Tag Select { get; } = "select";
 
+    ///<summary> template hole </summary>
+    public static Tag Slot { get; } = "slot";
+
     ///<summary>small print </summary>
     public static Tag Small { get; } = "small";
 
@@ -321,6 +328,9 @@ public static class Tags
     ///<summary>superscript</summary>
     public static Tag Sup { get; } = "sup";
 
+    ///<summary>Svg content</summary>
+    public static Tag Svg { get; } = "svg";
+
     ///<summary>table</summary>
     public static Tag Table { get; } = "table";
 
@@ -329,6 +339,9 @@ public static class Tags
 
     ///<summary>table cell</summary>
     public static Tag Td { get; } = "td";
+
+    ///<summary>template</summary>
+    public static Tag Template { get; } = "template";
 
     ///<summary>text input area</summary>
     public static Tag Textarea { get; } = "textarea";
@@ -367,6 +380,6 @@ public static class Tags
     ///<summary>video </summary>
     public static Tag Video { get; } = "video";
 
-    ///<summary>line-break opportunity </summary>
+    ///<summary>word-break opportunity </summary>
     public static Tag Wbr { get; } = "wbr";
 }

@@ -13,7 +13,7 @@ public class AttributeTests
     [Fact]
     public void BooleanAttributeInCtor()
     {
-        var input = new He("input", ("checked", null));
+        var input = new He("input") { ("checked", null) };
         var html = input.ToString();
         Assert.Equal(@"<input checked>", html);
     }
@@ -21,7 +21,7 @@ public class AttributeTests
     [Fact]
     public void UnquotedAttribute()
     {
-        var input = new He("input", ("type", "checkbox".Unquoted()));
+        var input = new He("input") { ("type", "checkbox".Unquoted()) };
         var html = input.ToString();
         Assert.Equal(@"<input type=checkbox>", html);
     }

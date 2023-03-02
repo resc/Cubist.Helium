@@ -12,6 +12,16 @@ public class HeTests
     }
 
     [Fact]
+    public void CanConstructMetaElement()
+    {
+        var meta = He.Meta("keywords", "test, library");
+
+        var html = meta.ToString();
+        _output.WriteLine(html);
+
+    }
+
+    [Fact]
     public void PrettyPrintList()
     {
         var list = new He("ul")
@@ -24,15 +34,9 @@ public class HeTests
         var html = list.PrettyPrint();
         _output.WriteLine(html);
         Assert.Equal(@"<ul>
-  <li>
-    <a href=""http://www.example.com"">Link to example.com</a>
-  </li>
-  <li>
-    <a href=""http://www.example.com"">Link to example.com</a>
-  </li>
-  <li>
-    <a href=""http://www.example.com"">Link to example.com</a>
-  </li>
+  <li><a href=""http://www.example.com"">Link to example.com</a></li>
+  <li><a href=""http://www.example.com"">Link to example.com</a></li>
+  <li><a href=""http://www.example.com"">Link to example.com</a></li>
 </ul>
 ", html);
     }
@@ -59,17 +63,13 @@ public class HeTests
         var html = list.PrettyPrint();
         _output.WriteLine(html);
         Assert.Equal(@"<ul>
-  <li>
-    <a href=""http://www.example.com"">Link to example.com</a>
-  </li>
+  <li><a href=""http://www.example.com"">Link to example.com</a></li>
   <!--
     This is
     a multiline
     comment
   -->
-  <li>
-    <a href=""http://www.example.com"">Link to example.com</a>
-  </li>
+  <li><a href=""http://www.example.com"">Link to example.com</a></li>
 </ul>
 ", html);
     }
@@ -87,13 +87,9 @@ public class HeTests
         var html = list.PrettyPrint();
         _output.WriteLine(html);
         Assert.Equal(@"<ul>
-  <li>
-    <a href=""http://www.example.com"">Link to example.com</a>
-  </li>
+  <li><a href=""http://www.example.com"">Link to example.com</a></li>
   <!-- This is a single line comment -->
-  <li>
-    <a href=""http://www.example.com"">Link to example.com</a>
-  </li>
+  <li><a href=""http://www.example.com"">Link to example.com</a></li>
 </ul>
 ", html);
     }
@@ -134,15 +130,9 @@ public class HeTests
 </head>
 <body>
   <ul>
-    <li>
-      <a href=""http://www.example.com"">Link to example.com</a>
-    </li>
-    <li>
-      <a href=""http://www.example.com"">Link to example.com</a>
-    </li>
-    <li>
-      <a href=""http://www.example.com"">Link to example.com</a>
-    </li>
+    <li><a href=""http://www.example.com"">Link to example.com</a></li>
+    <li><a href=""http://www.example.com"">Link to example.com</a></li>
+    <li><a href=""http://www.example.com"">Link to example.com</a></li>
   </ul>
 </body>
 </html>";

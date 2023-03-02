@@ -1,4 +1,7 @@
 ﻿using System.Collections;
+using System.Globalization;
+using System.Reflection.Emit;
+using System.Runtime.CompilerServices;
 
 namespace Cubist.Helium;
 
@@ -7,14 +10,483 @@ namespace Cubist.Helium;
 /// </summary>
 public class He : Node, IList<Node>
 {
-    public static He DocType() => new He(new Tag(@"!DOCTYPE", TagOptions.Html5 | TagOptions.Void)).Attr("html");
+    // ReSharper disable once InconsistentNaming
+    private static CultureInfo IC => CultureInfo.InvariantCulture;
+
+    /// <inheritdoc cref="Tags.DocType"/>
+    public static He DocType() => new He(Tags.DocType).Attr("html");
+
+    /// <inheritdoc cref="Tags.DocType"/>
+    public static HtmlDocument Document(He head, He body) => new(head, body);
+
+    /// <inheritdoc cref="Tags.A"/>
+    public static He A(string href, params object[] content) => new(Tags.A) { ("href", href), content };
+
+    /// <inheritdoc cref="Tags.Abbr"/>
+    public static He Abbr(params object[] content) => new(Tags.Abbr) { content };
+
+    /// <inheritdoc cref="Tags.Address"/>
+    public static He Address(params object[] content) => new(Tags.Address) { content };
+
+    /// <inheritdoc cref="Tags.Area"/>
+    public static He Area(string shape, (double, double, double, double) coords, string alt, string href) =>
+        new(Tags.Area)
+        {
+            (nameof(shape), shape),
+            (nameof(coords), string.Format(IC,
+                "{0},{1},{2},{3}",
+                coords.Item1, coords.Item2,
+                coords.Item3, coords.Item4)),
+            (nameof(alt), alt),
+            (nameof(href), href)
+        };
+
+    /// <inheritdoc cref="Tags.Article"/>
+    public static He Article(params object[] content) => new(Tags.Article) { content };
+
+    /// <inheritdoc cref="Tags.Aside"/>
+    public static He Aside(params object[] content) => new(Tags.Aside) { content };
+
+    /// <inheritdoc cref="Tags.Audio"/>
+    public static He Audio(string src, string type) => new(Tags.Audio) { ("controls", null), Source(src, type) };
+
+    /// <inheritdoc cref="Tags.B"/>
+    public static He B(params object[] content) => new(Tags.B) { content };
+
+    /// <inheritdoc cref="Tags.Base"/>
+    public static He Base(string? href = null, string? target = null)
+        => new He(Tags.Base)
+            .CAttr(href != null, nameof(href), href)
+            .CAttr(target != null, nameof(target), target);
+
+    /// <inheritdoc cref="Tags.Bdi"/>
+    public static He Bdi(params object[] content) => new(Tags.Bdi) { content };
+
+    /// <inheritdoc cref="Tags.Bdo"/>
+    public static He Bdo(string dir, params object[] content) => new(Tags.Bdo, (nameof(dir), dir)) { content };
+
+    /// <inheritdoc cref="Tags.BlockQuote"/>
+    public static He BlockQuote(params object[] content) => new(Tags.BlockQuote) { content };
+
+    /// <inheritdoc cref="Tags.Body"/>
+    public static He Body(params object[] content) => new(Tags.Body) { content };
+
+    /// <inheritdoc cref="Tags.Br"/>
+    public static He Br() => new(Tags.Br);
+
+    /// <inheritdoc cref="Tags.Button"/>
+    public static He Button(string type, string name, string value, params object[] content) => new(Tags.Button)
+    {
+        (nameof(type), type),
+        (nameof(name), name),
+        (nameof(value), value),
+        content,
+    };
+
+    /// <inheritdoc cref="Tags.Canvas"/>
+    public static He Canvas(params object[] content) => new(Tags.Canvas) { content };
+
+    /// <inheritdoc cref="Tags.Caption"/>
+    public static He Caption(params object[] content) => new(Tags.Caption) { content };
+
+    /// <inheritdoc cref="Tags.Cite"/>
+    public static He Cite(params object[] content) => new(Tags.Cite) { content };
+
+    /// <inheritdoc cref="Tags.Code"/>
+    public static He Code(params object[] content) => new(Tags.Code) { content };
+
+    /// <inheritdoc cref="Tags.Col"/>
+    public static He Col(params object[] content) => new(Tags.Col) { content };
+
+    /// <inheritdoc cref="Tags.Colgroup"/>
+    public static He Colgroup(params object[] content) => new(Tags.Colgroup) { content };
+
+    /// <inheritdoc cref="Comment"/>
+    public static Comment Comment(string text) => new(text);
+
+    /// <inheritdoc cref="Tags.Data"/>
+    public static He Data(object value, params object[] content) => new(Tags.Data) { (nameof(value), value), content };
+
+    /// <inheritdoc cref="Tags.Datalist"/>
+    public static He Datalist(params object[] content) => new(Tags.Datalist) { content };
+
+    /// <inheritdoc cref="Tags.Dd"/>
+    public static He Dd(params object[] content) => new(Tags.Dd) { content };
+
+    /// <inheritdoc cref="Tags.Del"/>
+    public static He Del(params object[] content) => new(Tags.Del) { content };
+
+    /// <inheritdoc cref="Tags.Details"/>
+    public static He Details(params object[] content) => new(Tags.Details) { content };
+
+    /// <inheritdoc cref="Tags.Dfn"/>
+    public static He Dfn(params object[] content) => new(Tags.Dfn) { content };
+
+    /// <inheritdoc cref="Tags.Dialog"/>
+    public static He Dialog(params object[] content) => new(Tags.Dialog) { content };
+
+    /// <inheritdoc cref="Tags.Div"/>
+    public static He Div(params object[] content) => new(Tags.Div) { content };
+
+    /// <inheritdoc cref="Tags.Dl"/>
+    public static He Dl(params object[] content) => new(Tags.Dl) { content };
+
+    /// <inheritdoc cref="Tags.Dt"/>
+    public static He Dt(params object[] content) => new(Tags.Dt) { content };
+
+    /// <inheritdoc cref="Tags.Em"/>
+    public static He Em(params object[] content) => new(Tags.Em) { content };
+
+    /// <inheritdoc cref="Tags.Embed"/>
+    public static He Embed(string src, string type, params object[] content) => new(Tags.Embed)
+    {
+        (nameof(src), src),
+        (nameof(type), type),
+        content
+    };
+
+    /// <inheritdoc cref="Tags.Fieldset"/>
+    public static He Fieldset(params object[] content) => new(Tags.Fieldset) { content };
+
+    /// <inheritdoc cref="Tags.Figcaption"/>
+    public static He Figcaption(params object[] content) => new(Tags.Figcaption) { content };
+
+    /// <inheritdoc cref="Tags.Figure"/>
+    public static He Figure(params object[] content) => new(Tags.Figure) { content };
+
+    /// <inheritdoc cref="Tags.Footer"/>
+    public static He Footer(params object[] content) => new(Tags.Footer) { content };
+
+    /// <inheritdoc cref="Tags.Form"/>
+    public static He Form(string method, string action, params object[] content) => new(Tags.Form)
+    {
+        (nameof(method), method),
+        (nameof(action), action),
+        content
+    };
+
+    /// <inheritdoc cref="Tags.H1"/>
+    public static He H1(params object[] content) => new(Tags.H1) { content };
+
+    /// <inheritdoc cref="Tags.H2"/>
+    public static He H2(params object[] content) => new(Tags.H2) { content };
+
+    /// <inheritdoc cref="Tags.H3"/>
+    public static He H3(params object[] content) => new(Tags.H3) { content };
+
+    /// <inheritdoc cref="Tags.H4"/>
+    public static He H4(params object[] content) => new(Tags.H4) { content };
+
+    /// <inheritdoc cref="Tags.H5"/>
+    public static He H5(params object[] content) => new(Tags.H5) { content };
+
+    /// <inheritdoc cref="Tags.H6"/>
+    public static He H6(params object[] content) => new(Tags.H6) { content };
+
+    /// <inheritdoc cref="Tags.Head"/>
+    public static He Head(params object[] content) => new(Tags.Head) { content };
+
+    /// <inheritdoc cref="Tags.Header"/>
+    public static He Header(params object[] content) => new(Tags.Header) { content };
+
+    /// <inheritdoc cref="Tags.Hr"/>
+    public static He Hr() => new(Tags.Hr);
+
+    /// <inheritdoc cref="Tags.Html"/>
+    public static He Html(params object[] content) => new(Tags.Html) { content };
+
+    /// <inheritdoc cref="Tags.I"/>
+    public static He I(params object[] content) => new(Tags.I) { content };
+
+    /// <inheritdoc cref="Tags.Iframe"/>
+    public static He Iframe(string src, string title) => new(Tags.Iframe)
+    {
+        (nameof(src), src),
+        (nameof(title), title),
+    };
+
+    /// <inheritdoc cref="Tags.Img"/>
+    public static He Img(string src, string alt, int? width = null, int? height = null)
+        => new He(Tags.Img)
+            {
+                (nameof(src), src),
+                (nameof(alt), alt)
+            }
+            .CAttr(width != null, nameof(width), width)
+            .CAttr(height != null, nameof(height), height);
+
+    /// <inheritdoc cref="Tags.Input"/>
+    public static He Input(string type, string name, string id, params (string, object?)[] attrs) => new(Tags.Input)
+    {
+        (nameof(type), type),
+        (nameof(name), name),
+        (nameof(id), id),
+        attrs,
+    };
+
+    /// <inheritdoc cref="Tags.Ins"/>
+    public static He Ins(params object[] content) => new(Tags.Ins) { content };
+
+    /// <inheritdoc cref="Tags.Kbd"/>
+    public static He Kbd(params object[] content) => new(Tags.Kbd) { content };
+
+    /// <inheritdoc cref="Tags.Label"/>
+    public static He Label(string @for, params object[] content) => new(Tags.Label)
+    {
+        (nameof(@for), @for),
+        content
+    };
+
+    /// <inheritdoc cref="Tags.Legend"/>
+    public static He Legend(params object[] content) => new(Tags.Legend) { content };
+
+    /// <inheritdoc cref="Tags.Li"/>
+    public static He Li(params object[] content) => new(Tags.Li) { content };
+
+    /// <inheritdoc cref="Tags.Link"/>
+    public static He Link(string rel, string href, params (string, object?)[] attrs) => new(Tags.Link)
+    {
+        (nameof(rel), rel),
+        (nameof(href), href),
+        attrs
+    };
+
+    /// <inheritdoc cref="Tags.Main"/>
+    public static He Main(params object[] content) => new(Tags.Main) { content };
+
+    /// <inheritdoc cref="Tags.Map"/>
+    public static He Map(string name, params object[] content) => new(Tags.Map) { (nameof(name), name), content };
+
+    /// <inheritdoc cref="Tags.Mark"/>
+    public static He Mark(params object[] content) => new(Tags.Mark) { content };
+
+    /// <inheritdoc cref="Tags.Meta"/>
+    public static He Meta(params (string, object?)[] attrs) => new(Tags.Meta) { attrs };
+
+    /// <inheritdoc cref="Tags.Meta"/>
+    public static He Meta(string name, string content) =>
+        new(Tags.Meta) { (nameof(name), name), (nameof(content), content) };
+
+    /// <inheritdoc cref="Tags.Meta"/>
+    public static He MetaHttpEquiv(string httpEquiv, object? content) => new(Tags.Meta)
+        { ("http-equiv", httpEquiv), (nameof(content), content) };
+
+    /// <inheritdoc cref="Tags.Meta"/>
+    public static He MetaCharsetUtf8() => Meta("charset", "utf-8");
+
+    /// <inheritdoc cref="Tags.Meta"/>
+    public static He MetaRobots(bool index, bool follow) => Meta("robots",
+        $"{(index ? "index" : @"noindex")},{(follow ? "follow" : @"nofollow")}");
+
+    /// <summary>
+    /// Sets the viewport to make your website look good on all devices:
+    /// <c>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</c>
+    /// </summary>
+    /// <returns></returns>
+    public static He MetaViewPort() => new(Tags.Meta)
+        { ("name", "viewport"), ("content", "width=device-width, initial-scale=1.0") };
+
+    /// <inheritdoc cref="Tags.Meter"/>
+    public static He Meter(double percent, params (string, object?)[] content) => new(Tags.Meter)
+    {
+        ("value", percent.ToString(IC)),
+        content
+    };
+
+    /// <inheritdoc cref="Tags.Meter"/>
+    public static He Meter(double value, double min, double max, params (string, object?)[] content) => new(Tags.Meter)
+    {
+        (nameof(value), value.ToString(IC)),
+        (nameof(min), min.ToString(IC)),
+        (nameof(max), max.ToString(IC)),
+        content
+    };
+
+    /// <inheritdoc cref="Tags.Nav"/>
+    public static He Nav(params object[] content) => new(Tags.Nav) { content };
+
+    /// <inheritdoc cref="Tags.NoScript"/>
+    public static He NoScript(params object[] content) => new(Tags.NoScript) { content };
+
+    /// <inheritdoc cref="Tags.Object"/>
+    public static He Object(params object[] content) => new(Tags.Object) { content };
+
+    /// <inheritdoc cref="Tags.Ol"/>
+    public static He Ol(params object[] content) => new(Tags.Ol) { content };
+
+    /// <inheritdoc cref="Tags.Optgroup"/>
+    public static He Optgroup(string label, params object[] content) =>
+        new(Tags.Optgroup) { (nameof(label), label), content };
+
+    /// <inheritdoc cref="Tags.Option"/>
+    public static He Option(object? value, params object[] content) =>
+        new(Tags.Option) { (nameof(value), value), content };
+
+    /// <inheritdoc cref="Tags.Output"/>
+    public static He Output(string @for, params object[] content) => new(Tags.Output) { (nameof(@for), @for), content };
+
+    /// <inheritdoc cref="Tags.P"/>
+    public static He P(params object[] content) => new(Tags.P) { content };
+
+    /// <inheritdoc cref="Tags.Param"/>
+    public static He Param(string name, object? value) =>
+        new(Tags.Param) { (nameof(name), name), (nameof(value), value) };
+
+
+    /// <inheritdoc cref="Tags.Picture"/>
+    public static He Picture(params object[] content) => new(Tags.Picture) { content };
+
+    /// <inheritdoc cref="Tags.Pre"/>
+    public static He Pre(params object[] content) => new(Tags.Pre) { content };
+
+    /// <inheritdoc cref="Tags.Progress"/>
+    public static He Progress(double value, double max, params object[] content) => new(Tags.Progress)
+    {
+        (nameof(value), value.ToString(IC)),
+        (nameof(max), max.ToString(IC)),
+        content
+    };
+
+    /// <inheritdoc cref="Tags.Q"/>
+    public static He Q(params object[] content) => new(Tags.Q) { content };
+
+    /// <inheritdoc cref="Tags.Rp"/>
+    public static He Rp(params object[] content) => new(Tags.Rp) { content };
+
+    /// <inheritdoc cref="Tags.Rt"/>
+    public static He Rt(params object[] content) => new(Tags.Rt) { content };
+
+    /// <inheritdoc cref="Tags.Ruby"/>
+    public static He Ruby(params object[] content) => new(Tags.Ruby) { content };
+
+    /// <inheritdoc cref="Tags.S"/>
+    public static He S(params object[] content) => new(Tags.S) { content };
+
+    // ReSharper disable once IdentifierTypo
+    /// <inheritdoc cref="Tags.Samp"/>
+    public static He Samp(params object[] content) => new(Tags.Samp) { content };
+
+    /// <inheritdoc cref="Tags.Script"/>
+    public static He Script(params object[] content) => new(Tags.Script) { content };
+
+    /// <inheritdoc cref="Tags.Script"/>
+    public static He Script(string src, string type, params object[] content) => new(Tags.Script)
+    {
+        (nameof(src), src),
+        (nameof(type), type),
+        content
+    };
+
+    /// <inheritdoc cref="Tags.Section"/>
+    public static He Section(params object[] content) => new(Tags.Section) { content };
+
+    /// <inheritdoc cref="Tags.Select"/>
+    public static He Select(params object[] content) => new(Tags.Select) { content };
+
+    /// <inheritdoc cref="Tags.Slot"/>
+    public static He Slot(string name) => new(Tags.Slot) { (nameof(name), name) };
+
+    /// <inheritdoc cref="Tags.Small"/>
+    public static He Small(params object[] content) => new(Tags.Small) { content };
+
+    /// <inheritdoc cref="Tags.Source"/>
+    public static He Source(string src, string type) => new(Tags.Source, (nameof(src), src), (nameof(type), type));
+
+    /// <inheritdoc cref="Tags.Span"/>
+    public static He Span(params object[] content) => new(Tags.Span) { content };
+
+    /// <inheritdoc cref="Tags.Strong"/>
+    public static He Strong(params object[] content) => new(Tags.Strong) { content };
+
+    /// <inheritdoc cref="Tags.Style"/>
+    public static He Style(params object[] content) => new(Tags.Style) { content };
+
+    /// <inheritdoc cref="Tags.Sub"/>
+    public static He Sub(params object[] content) => new(Tags.Sub) { content };
+
+    /// <inheritdoc cref="Tags.Summary"/>
+    public static He Summary(params object[] content) => new(Tags.Summary) { content };
+
+    /// <inheritdoc cref="Tags.Sup"/>
+    public static He Sup(params object[] content) => new(Tags.Sup) { content };
+
+    /// <inheritdoc cref="Tags.Svg"/>
+    public static He Svg(params object[] content) => new(Tags.Svg) { content };
+
+    /// <inheritdoc cref="Tags.Table"/>
+    public static He Table(params object[] content) => new(Tags.Table) { content };
+
+    /// <inheritdoc cref="Tags.Tbody"/>
+    public static He Tbody(params object[] content) => new(Tags.Tbody) { content };
+
+    /// <inheritdoc cref="Tags.Td"/>
+    public static He Td(params object[] content) => new(Tags.Td) { content };
+
+    /// <inheritdoc cref="Tags.Template"/>
+    public static He Template(params object[] content) => new(Tags.Template) { content };
+
+    /// <inheritdoc cref="Tags.Textarea"/>
+    public static He Textarea(params object[] content) => new(Tags.Textarea) { content };
+
+    /// <inheritdoc cref="Tags.Tfoot"/> 
+    // ReSharper disable once IdentifierTypo
+    public static He Tfoot(params object[] content) => new(Tags.Tfoot) { content };
+
+    /// <inheritdoc cref="Tags.Th"/>
+    public static He Th(params object[] content) => new(Tags.Th) { content };
+
+    /// <inheritdoc cref="Tags.Thead"/>
+    public static He Thead(params object[] content) => new(Tags.Thead) { content };
+
+    /// <inheritdoc cref="Tags.Time"/>
+    public static He Time(params object[] content) => new(Tags.Time) { content };
+
+    /// <inheritdoc cref="Tags.Time"/>
+    public static He Time(DateTime datetime, params object[] content) =>
+        new(Tags.Time) { (nameof(datetime), datetime.ToString("u")), content };
+
+    /// <inheritdoc cref="Tags.Title"/>
+    public static He Title(params object[] content) => new(Tags.Title) { content };
+
+    /// <inheritdoc cref="Tags.Tr"/>
+    public static He Tr(params object[] content) => new(Tags.Tr) { content };
+
+    /// <inheritdoc cref="Tags.Track"/>
+    // ReSharper disable once IdentifierTypo
+    public static He Track(string src, string kind, string srclang, string label) => new(Tags.Track)
+    {
+        (nameof(src), src),
+        (nameof(kind), kind),
+        (nameof(srclang), srclang),
+        (nameof(label), label),
+    };
+
+    /// <inheritdoc cref="Tags.U"/>
+    public static He U(params object[] content) => new(Tags.U) { content };
+
+    /// <inheritdoc cref="Tags.Ul"/>
+    public static He Ul(params object[] content) => new(Tags.Ul) { content };
+
+    /// <inheritdoc cref="Tags.Var"/>
+    public static He Var(params object[] content) => new(Tags.Var) { content };
+
+    /// <inheritdoc cref="Tags.Video"/>
+    public static He Video(params object[] content) => new(Tags.Video) { ("controls", null), content };
+
+    /// <inheritdoc cref="Tags.Wbr"/>
+    public static He Wbr() => new(Tags.Wbr);
 
     public Tag Tag { get; }
 
     private List<Node>? _nodes;
     private List<(string, object?)>? _attrs;
 
-    public He(Tag tag, params (string name, object? value)[] attrs)
+    public He(Tag tag)
+    {
+        Tag = tag;
+    }
+
+    public He(Tag tag, params (string, object?)[] attrs)
     {
         Tag = tag;
         Attr(attrs);
@@ -32,6 +504,15 @@ public class He : Node, IList<Node>
         if (attrs.Length == 0) return this;
         _attrs ??= new(attrs.Length);
         _attrs.AddRange(attrs);
+        return this;
+    }
+
+    /// <summary> Adds the attribute only if <paramref name="condition"/> is true </summary>
+    public He CAttr(bool condition, string name, object? value = null)
+    {
+        if (condition)
+            Attr(name, value);
+
         return this;
     }
 
@@ -81,8 +562,57 @@ public class He : Node, IList<Node>
         return GetEnumerator();
     }
 
+    public void Add(IEnumerable<object?> content)
+    {
+        foreach (var c in content)
+            Add(c);
+    }
+
+    public void Add(object? c)
+    {
+        switch (c)
+        {
+            case Node n:
+                Add(n);
+                break;
+            case string s:
+                Add(s);
+                break;
+            case ITuple { Length: 2 } tuple:
+                Attr(tuple[0]!.ToString()!, tuple[1]);
+                break;
+            case IEnumerable items:
+                foreach (var item in items)
+                    Add(item);
+
+                break;
+            default:
+                if (c != null)
+                    Add(new CData($"{c}"));
+                break;
+        }
+    }
+
+    public void Add(params (string, object?)[] attr)
+        => Attr(attr);
+
+    public void Add((string, object?) attr)
+        => Attr(attr);
+
     public void Add(string text)
         => Add(new Text(text));
+
+    public void Add(Text item)
+        => Add((Node)item);
+
+    public void Add(CData item)
+        => Add((Node)item);
+
+    public void Add(Comment item)
+        => Add((Node)item);
+
+    public void Add(He item)
+        => Add((Node)item);
 
     public void Add(Node item)
     {
@@ -90,6 +620,7 @@ public class He : Node, IList<Node>
         _nodes ??= new();
         _nodes.Add(item);
     }
+
     public void Clear()
     {
         _nodes = null;
