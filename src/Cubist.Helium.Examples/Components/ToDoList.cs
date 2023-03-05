@@ -5,22 +5,26 @@ using static Cubist.Helium.Examples.Components.TodoListComponent;
 namespace Cubist.Helium.Examples.Components
 {
     [Description("Shows how to integrate your custom elements with Helium")]
-    public class CustomElements : IExample
+    public class ToDoList : IExample
     {
         private readonly Todo[] _todoList = new[]
         {
-            new Todo(Description: "Add javascript", Status: "New"),
-            new Todo(Description: "Add styling", Status: "New"),
-            new Todo(Description: "Add template", Status: "Done"),
-            new Todo(Description: "Make component element example", Status: "Done"),
+            new Todo(Description: "Add toggle button", Status: "new"),
+            new Todo(Description: "Improve styling", Status: "new"),
+            new Todo(Description: "Add template", Status: "done"),
+            new Todo(Description: "Make component element example", Status: "done"),
         };
+
 
         public Node Render()
             => Document(
                 Head(
                     Script(
+                        // the list is simple
                         DefineCustomElement(TodoListElement, TodoListTemplateId),
-                        DefineCustomElement(TodoItemElement, TodoItemTemplateId))),
+                        // the to do item element add an attributeChangedCallback
+                        // see https://googlechromelabs.github.io/howto-components/howto-checkbox/#demo for inspiration.
+                        TodoItemDefinitionScript)),
                 Body(
                     TodoListTemplate(),
                     TodoItemTemplate(),

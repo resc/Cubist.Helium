@@ -414,10 +414,11 @@ public class He : Node, IList<Node>
         content
     };
 
-    /// <summary> The simplest web component script </summary>
-    /// <param name="tag">the web component tag</param>
-    /// <param name="templateId">the component template id</param>
-    /// <param name="mode"></param>
+    /// <summary> Creates a javascript snippet that defines the simplest custom component class that does something.
+    /// The returned value should be embedded in a <c>&lt;script&gt;</c> tag </summary>
+    /// <param name="tag">the component tag, should contain at least one hyphen: <c>-</c> </param>
+    /// <param name="templateId">the component's template id</param>
+    /// <param name="mode">shadow dom 'mode' parameter</param>
     /// <returns></returns>
     public static Text DefineCustomElement(string tag, string templateId, string mode = "open")
         => new($@"customElements.define(
