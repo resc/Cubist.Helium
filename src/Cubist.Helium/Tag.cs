@@ -17,8 +17,16 @@ public readonly record struct Tag(string Value, TagOptions Options)
     /// <summary> Writes the start tag begin <c>&lt;{tag}</c> so that attributes can be written. </summary>
     public void WriteStartBegin(TextWriter w)
     {
-        w.Write("<");
-        w.Write(Value);
+        w.Write('<');
+        WriteTag(w);
+    }
+
+    private void WriteTag(TextWriter w)
+    {
+        if (Value.Length == 1)
+            w.Write(Value[0]);
+        else
+            w.Write(Value);
     }
 
     /// <summary> Writes the start tag's closing <c>&gt;</c> character. </summary>
@@ -32,8 +40,8 @@ public readonly record struct Tag(string Value, TagOptions Options)
     {
         if (this.IsVoid()) return;
         w.Write("</");
-        w.Write(Value);
-        w.Write(">");
+        WriteTag(w);
+        w.Write('>');
     }
 
 
@@ -60,7 +68,8 @@ public readonly record struct Tag(string Value, TagOptions Options)
     /// <summary> See https://html.spec.whatwg.org/multipage/dom.html#sectioning-content </summary>
     private static readonly IReadOnlySet<string> _sectioningContent = new HashSet<string>
     {
-        "article", "aside", "body", "nav", "section", "header","footer", "address",  "h1","h2","h3","h4","h5","h6","hgroup"
+        "article", "aside", "body", "nav", "section", "header", "footer", "address",
+        "h1", "h2", "h3", "h4", "h5", "h6", "hgroup"
     };
 
     /// <summary> See https://html.spec.whatwg.org/multipage/dom.html#heading-content </summary>
@@ -68,8 +77,7 @@ public readonly record struct Tag(string Value, TagOptions Options)
     {
         "h1","h2","h3","h4","h5","h6"
     };
-
-
+    
     /// <summary> See https://html.spec.whatwg.org/multipage/dom.html#phrasing-content </summary>
     private static readonly IReadOnlySet<string> _phrasingContent = new HashSet<string>
     {
@@ -144,20 +152,20 @@ public readonly record struct Tag(string Value, TagOptions Options)
     };
 
     /// <summary> https://html.spec.whatwg.org/multipage/grouping-content.html#usage-summary </summary>
-    private static readonly IReadOnlySet<string> _html5Elements = new HashSet<string>
-    {
-        "a", "abbr", "address", "area", "article", "aside", "audio", "b", "base", "bdi",
-        "bdo", @"blockquote", "body", "br", "button", "canvas", "caption", "cite", "code",
-        "col", "colgroup", "command", "datalist", "dd", "del", "details", "dfn", "div",
-        "dl", "dt", "em", "embed", "fieldset", "figcaption", "figure", "footer", "form",
-        "h1", "h2", "h3", "h4", "h5", "h6", "head", "header", "hgroup", "hr", "html",
-        "i", "iframe", "img", "input", "ins", "kbd", "keygen", "label", "legend", "li",
-        "link", "map", "mark", "menu", "meta", "meter", "nav", @"noscript", "object",
-        "ol", "optgroup", "option", "output", "p", "param", "pre", "progress", "q", "rp",
-        "rt", "ruby", "s", @"samp", "script", "section", "select", "small", "source", "span",
-        "strong", "style", "sub", "summary", "sup", "table", "tbody", "td", "textarea", @"tfoot",
-        "th", "thead", "time", "title", "tr", "track", "u", "ul", "var", "video", "wbr"
-    };
+    private static readonly IReadOnlySet<string> _html5Elements = _metaDataContent
+        .Concat(_flowContent)
+        .Concat(_sectioningContent)
+        .Concat(_headingContent)
+        .Concat(_phrasingContent)
+        .Concat(_embeddedContent)
+        .Concat(_scriptContent)
+        .Concat(_voidElements)
+        .Concat(_inlineElements)
+        .Concat(_groupingElements)
+        .Concat(_tableElements)
+        .Concat(_formElements)
+        .Concat(_interactiveElements)
+        .ToHashSet();
 
     /// <summary> See https://html.spec.whatwg.org/#valid-custom-element-name </summary>
     private static readonly IReadOnlySet<string> _hyphenatedSvgMathMlElements = new HashSet<string>
@@ -184,7 +192,7 @@ public readonly record struct Tag(string Value, TagOptions Options)
 
             if (_metaDataContent.Contains(tag))
                 option |= TagOptions.Metadata;
-            
+
             if (_flowContent.Contains(tag))
                 option |= TagOptions.Flow;
 
@@ -196,7 +204,7 @@ public readonly record struct Tag(string Value, TagOptions Options)
 
             if (_phrasingContent.Contains(tag))
                 option |= TagOptions.Phrasing;
-            
+
             if (_embeddedContent.Contains(tag))
                 option |= TagOptions.EmbeddedContent;
 
@@ -205,7 +213,7 @@ public readonly record struct Tag(string Value, TagOptions Options)
 
             if (_voidElements.Contains(tag))
                 option |= TagOptions.Void;
-            
+
             if (_inlineElements.Contains(tag))
                 option |= TagOptions.Inline;
 

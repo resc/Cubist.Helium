@@ -21,7 +21,7 @@ public class AttributeTests
     [Fact]
     public void UnquotedAttribute()
     {
-        var input = new He("input") { ("type", "checkbox".Unquoted()) };
+        var input = new He("input") { ("type", "checkbox".NoQuotes()) };
         var html = input.ToString();
         Assert.Equal(@"<input type=checkbox>", html);
     }

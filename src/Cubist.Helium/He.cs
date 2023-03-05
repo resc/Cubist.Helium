@@ -1,7 +1,8 @@
 ﻿using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
+using System.Text.Json;
 
 namespace Cubist.Helium;
 
@@ -12,11 +13,19 @@ public class He : Node, IList<Node>
 {
     // ReSharper disable once InconsistentNaming
     private static CultureInfo IC => CultureInfo.InvariantCulture;
+    /// <summary>
+    /// Use this to create attribute tuples like ("checked", Null)
+    /// to avoid type-inference breakdowns.
+    /// </summary> 
+    public static object? Null => null;
 
     /// <inheritdoc cref="Tags.DocType"/>
     public static He DocType() => new He(Tags.DocType).Attr("html");
 
-    /// <inheritdoc cref="Tags.DocType"/>
+    /// <summary> Creates an empty document </summary>
+    public static HtmlDocument Document() => new();
+
+    /// <summary> Creates a document with the given <c>head</c> and <c>body</c> elements </summary>
     public static HtmlDocument Document(He head, He body) => new(head, body);
 
     /// <inheritdoc cref="Tags.A"/>
@@ -48,13 +57,13 @@ public class He : Node, IList<Node>
     public static He Aside(params object[] content) => new(Tags.Aside) { content };
 
     /// <inheritdoc cref="Tags.Audio"/>
-    public static He Audio(string src, string type) => new(Tags.Audio) { ("controls", null), Source(src, type) };
+    public static He Audio(string type, string src) => new(Tags.Audio) { ("controls", null), Source(type, src) };
 
     /// <inheritdoc cref="Tags.B"/>
     public static He B(params object[] content) => new(Tags.B) { content };
 
     /// <inheritdoc cref="Tags.Base"/>
-    public static He Base(string? href = null, string? target = null)
+    public static He Base(string? target = null, string? href = null)
         => new He(Tags.Base)
             .CAttr(href != null, nameof(href), href)
             .CAttr(target != null, nameof(target), target);
@@ -89,6 +98,9 @@ public class He : Node, IList<Node>
     /// <inheritdoc cref="Tags.Caption"/>
     public static He Caption(params object[] content) => new(Tags.Caption) { content };
 
+    /// <summary> Creates a CData node from the given content </summary>
+    public static CData CData(object content) => new(content);
+
     /// <inheritdoc cref="Tags.Cite"/>
     public static He Cite(params object[] content) => new(Tags.Cite) { content };
 
@@ -103,6 +115,10 @@ public class He : Node, IList<Node>
 
     /// <inheritdoc cref="Comment"/>
     public static Comment Comment(string text) => new(text);
+
+    /// <summary> Creates a custom tag </summary>
+    public static He Custom(string tag, params object[] content)
+        => new He(tag) { content };
 
     /// <inheritdoc cref="Tags.Data"/>
     public static He Data(object value, params object[] content) => new(Tags.Data) { (nameof(value), value), content };
@@ -138,7 +154,7 @@ public class He : Node, IList<Node>
     public static He Em(params object[] content) => new(Tags.Em) { content };
 
     /// <inheritdoc cref="Tags.Embed"/>
-    public static He Embed(string src, string type, params object[] content) => new(Tags.Embed)
+    public static He Embed(string type, string src, params object[] content) => new(Tags.Embed)
     {
         (nameof(src), src),
         (nameof(type), type),
@@ -199,14 +215,14 @@ public class He : Node, IList<Node>
     public static He I(params object[] content) => new(Tags.I) { content };
 
     /// <inheritdoc cref="Tags.Iframe"/>
-    public static He Iframe(string src, string title) => new(Tags.Iframe)
+    public static He Iframe(string title, string src) => new(Tags.Iframe)
     {
         (nameof(src), src),
         (nameof(title), title),
     };
 
     /// <inheritdoc cref="Tags.Img"/>
-    public static He Img(string src, string alt, int? width = null, int? height = null)
+    public static He Img(string alt, string src, int? width = null, int? height = null)
         => new He(Tags.Img)
             {
                 (nameof(src), src),
@@ -226,6 +242,10 @@ public class He : Node, IList<Node>
 
     /// <inheritdoc cref="Tags.Ins"/>
     public static He Ins(params object[] content) => new(Tags.Ins) { content };
+
+    ///  <summary> Renders the <paramref name="content"/> as serialized JSON</summary>
+    public static Json Json(object content, JsonSerializerOptions? options = null) =>
+        new(content) { Options = options! };
 
     /// <inheritdoc cref="Tags.Kbd"/>
     public static He Kbd(params object[] content) => new(Tags.Kbd) { content };
@@ -275,8 +295,25 @@ public class He : Node, IList<Node>
     public static He MetaCharsetUtf8() => Meta("charset", "utf-8");
 
     /// <inheritdoc cref="Tags.Meta"/>
-    public static He MetaRobots(bool index, bool follow) => Meta("robots",
-        $"{(index ? "index" : @"noindex")},{(follow ? "follow" : @"nofollow")}");
+    [SuppressMessage("ReSharper", "IdentifierTypo")]
+    public static He MetaRobots(bool index = true, bool follow = true, bool noarchive = false, bool nosnippet = false, bool noimageindex = false)
+        => Meta("robots", MakeRobotsContent(index, follow, noarchive, nosnippet, noimageindex));
+
+    [SuppressMessage("ReSharper", "IdentifierTypo")]
+    private static string MakeRobotsContent(bool index, bool follow, bool noarchive, bool nosnippet, bool noimageindex)
+    {
+        var content = (index, follow) switch
+        {
+            (true, true) => @"index,follow",
+            (true, false) => @"index,nofollow",
+            (false, true) => @"noindex,follow",
+            (false, false) => @"noindex,nofollow",
+        };
+        if (noarchive) content += @",noarchive";
+        if (nosnippet) content += @",nosnippet";
+        if (noimageindex) content += @",noimageindex";
+        return content;
+    }
 
     /// <summary>
     /// Sets the viewport to make your website look good on all devices:
@@ -370,12 +407,34 @@ public class He : Node, IList<Node>
     public static He Script(params object[] content) => new(Tags.Script) { content };
 
     /// <inheritdoc cref="Tags.Script"/>
-    public static He Script(string src, string type, params object[] content) => new(Tags.Script)
+    public static He Script(string type, string src, params object[] content) => new(Tags.Script)
     {
         (nameof(src), src),
         (nameof(type), type),
         content
     };
+
+    /// <summary> The simplest web component script </summary>
+    /// <param name="tag">the web component tag</param>
+    /// <param name="templateId">the component template id</param>
+    /// <param name="mode"></param>
+    /// <returns></returns>
+    public static Text DefineCustomElement(string tag, string templateId, string mode = "open")
+        => new($@"customElements.define(
+  ""{tag}"",
+  class extends HTMLElement {{
+    constructor() {{
+      super();
+      let template = document.getElementById(""{templateId}"");
+      let templateContent = template.content;
+
+      const shadowRoot = this.attachShadow({{ mode: ""{mode}"" }});
+      const clone = templateContent.cloneNode(true);
+      shadowRoot.appendChild(clone);
+    }}
+  }}
+);
+");
 
     /// <inheritdoc cref="Tags.Section"/>
     public static He Section(params object[] content) => new(Tags.Section) { content };
@@ -384,13 +443,16 @@ public class He : Node, IList<Node>
     public static He Select(params object[] content) => new(Tags.Select) { content };
 
     /// <inheritdoc cref="Tags.Slot"/>
-    public static He Slot(string name) => new(Tags.Slot) { (nameof(name), name) };
+    public static He Slot(params object[] contents) => new(Tags.Slot) { contents };
+
+    /// <inheritdoc cref="Tags.Slot"/>
+    public static He Slot(string name, params object[] contents) => new(Tags.Slot) { (nameof(name), name) ,contents};
 
     /// <inheritdoc cref="Tags.Small"/>
     public static He Small(params object[] content) => new(Tags.Small) { content };
 
     /// <inheritdoc cref="Tags.Source"/>
-    public static He Source(string src, string type) => new(Tags.Source, (nameof(src), src), (nameof(type), type));
+    public static He Source(string type, string src) => new(Tags.Source, (nameof(src), src), (nameof(type), type));
 
     /// <inheritdoc cref="Tags.Span"/>
     public static He Span(params object[] content) => new(Tags.Span) { content };
@@ -423,6 +485,9 @@ public class He : Node, IList<Node>
     public static He Td(params object[] content) => new(Tags.Td) { content };
 
     /// <inheritdoc cref="Tags.Template"/>
+    public static He Template(string id, params object[] content) => new(Tags.Template) { (nameof(id), id), content };
+
+    /// <inheritdoc cref="Tags.Template"/>
     public static He Template(params object[] content) => new(Tags.Template) { content };
 
     /// <inheritdoc cref="Tags.Textarea"/>
@@ -453,16 +518,18 @@ public class He : Node, IList<Node>
 
     /// <inheritdoc cref="Tags.Track"/>
     // ReSharper disable once IdentifierTypo
-    public static He Track(string src, string kind, string srclang, string label) => new(Tags.Track)
+    public static He Track(string label, string src, string srclang, string kind) => new(Tags.Track)
     {
-        (nameof(src), src),
-        (nameof(kind), kind),
-        (nameof(srclang), srclang),
         (nameof(label), label),
+        (nameof(src), src),
+        (nameof(srclang), srclang),
+        (nameof(kind), kind),
     };
 
-    /// <inheritdoc cref="Tags.U"/>
-    public static He U(params object[] content) => new(Tags.U) { content };
+    ///  <summary>
+    /// Inline text, consider passing the text as a string for auto-conversion to a <see cref="Text"/> node
+    /// </summary>
+    public static Text Text(string content) => new(content);
 
     /// <inheritdoc cref="Tags.Ul"/>
     public static He Ul(params object[] content) => new(Tags.Ul) { content };
@@ -578,6 +645,9 @@ public class He : Node, IList<Node>
             case string s:
                 Add(s);
                 break;
+            case System.Text.Json.Nodes.JsonNode jn:
+                Add(Json(jn));
+                break;
             case ITuple { Length: 2 } tuple:
                 Attr(tuple[0]!.ToString()!, tuple[1]);
                 break;
@@ -683,4 +753,6 @@ public class He : Node, IList<Node>
         if (Tag.IsVoid())
             throw new InvalidOperationException($"<{Tag.Value}> doesn't allow child nodes");
     }
+
+
 }

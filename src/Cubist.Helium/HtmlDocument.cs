@@ -1,7 +1,6 @@
 ﻿namespace Cubist.Helium;
-/// <summary>
-/// A Html5 document with empty html, head and body tags in place.
-/// 
+/// <summary> 
+/// A Html5 document with <c>!DOCTYPE</c>, <c>html</c>, <c>head</c> and <c>body</c> tags in place.
 /// </summary>
 public sealed class HtmlDocument : Node
 {

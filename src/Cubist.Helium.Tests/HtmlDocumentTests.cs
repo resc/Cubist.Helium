@@ -10,6 +10,7 @@ namespace Cubist.Helium.Tests
         {
             _output = output;
         }
+
         [Fact]
         public void EmptyDocument()
         {

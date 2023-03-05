@@ -6,7 +6,7 @@ public static class AttributeExtensions
      public static object SingleQuoted(this object o) => new SingleQuotedValue(o);
 
     /// <summary> Use this to not wrap an attribute value in quotes e.g. <c>type=button</c> </summary>
-    public static object Unquoted(this object o) => new UnquotedValue(o);
+    public static object NoQuotes(this object o) => new UnquotedValue(o);
 
     public static void WriteTo(this (string, object?) attr, TextWriter w)
     {

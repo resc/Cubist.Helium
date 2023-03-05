@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script>
+    customElements.define(
+      "todo-list",
+      class extends HTMLElement {
+        constructor() {
+          super();
+          let template = document.getElementById("todo-list-template");
+          let templateContent = template.content;
+    
+          const shadowRoot = this.attachShadow({ mode: "open" });
+          const clone = templateContent.cloneNode(true);
+          shadowRoot.appendChild(clone);
+        }
+      }
+    );
+    customElements.define(
+      "todo-item",
+      class extends HTMLElement {
+        constructor() {
+          super();
+          let template = document.getElementById("todo-item-template");
+          let templateContent = template.content;
+    
+          const shadowRoot = this.attachShadow({ mode: "open" });
+          const clone = templateContent.cloneNode(true);
+          shadowRoot.appendChild(clone);
+        }
+      }
+    );
+  </script>
+</head>
+<body>
+  <template id="todo-list-template">
+    <div class="todo-list">
+      <div class="todo-list-status">
+        <slot name="todo-list-item-count"></slot>
+      </div>
+      <div class="todo-list-items">
+        <ul>
+          <slot></slot>
+        </ul>
+      </div>
+    </div>
+  </template>
+  <template id="todo-item-template">
+    <li class="todo-item">
+      <div class="item-status">
+        <slot name="todo-item-status"></slot>
+      </div>
+      <div class="item-description">
+        <slot></slot>
+      </div>
+    </li>
+  </template>
+  <todo-list>
+    <div slot="todo-list-item-count"><data value="2">2 of 4 items to go</data></div>
+    <todo-item><span slot="todo-item-status">New</span>Add javascript</todo-item>
+    <todo-item><span slot="todo-item-status">New</span>Add styling</todo-item>
+    <todo-item><span slot="todo-item-status">Done</span>Add template</todo-item>
+    <todo-item><span slot="todo-item-status">Done</span>Make component element example</todo-item>
+  </todo-list>
+</body>
+</html>

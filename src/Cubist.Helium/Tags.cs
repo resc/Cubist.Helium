@@ -222,14 +222,14 @@ public static class Tags
     ///<summary>marked (highlighted) text </summary>
     public static Tag Mark { get; } = "mark";
 
-    ///<summary>metadata </summary>
+    ///<summary>document level metadata </summary>
     /// <remarks>
     /// <list>
-    ///   <item><term>meta name</term><description>name-value metadata</description></item>
-    ///   <item><term>meta http-equiv=refresh</term><description>“refresh” pragma directive</description></item>
-    ///   <item><term>meta http-equiv=default-style</term><description>“preferred stylesheet” pragma directive</description></item>
-    ///   <item><term>meta http-equiv=content-type</term><description>document character-encoding declaration </description></item>
-    ///   <item><term>meta charset</term><description>document character-encoding declaration </description></item>
+    ///   <item><term>meta name={name} content={content}</term><description>name-value metadata</description></item>
+    ///   <item><term>meta http-equiv=refresh content={content}</term><description>“refresh” pragma directive</description></item>
+    ///   <item><term>meta http-equiv=default-style content={content}</term><description>“preferred stylesheet” pragma directive</description></item>
+    ///   <item><term>meta http-equiv=content-type content={content}</term><description>document character-encoding declaration </description></item>
+    ///   <item><term>meta charset=utf-8</term><description>document character-encoding declaration </description></item>
     /// </list>
     /// </remarks>
     public static Tag Meta { get; } = "meta";
