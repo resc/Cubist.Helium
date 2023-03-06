@@ -24,7 +24,7 @@ namespace Cubist.Helium.Examples
         private static readonly List<object> _items = new() { "some text", 1, DateTime.Now, };
 
         [Example("Generate a list for heterogeneous items")]
-        public static Node ListTypeTemplates()
+        public static Node TypeTemplates()
             => Ul(_items.Select(item => Li(SelectItemTemplate(item))));
 
         private static Node SelectItemTemplate(object item)
@@ -37,6 +37,13 @@ namespace Cubist.Helium.Examples
             };
 
         #endregion
+
+
+        [Example("Generate a single <ul> list from multiple C# lists")]
+        public static Node NoTypeTemplates()
+            => Ul(_items.Select(item => Li(item)));
+
+
 
     }
 }

@@ -1,6 +1,4 @@
 ﻿using System.Buffers;
-using System.Collections.Concurrent;
-using System.Reflection.Metadata.Ecma335;
 using System.Text.Json;
 
 namespace Cubist.Helium;
@@ -188,7 +186,4 @@ public static class PrettyPrintExtensions
         // and the old one will be garbage collected eventually
         _indents.Return(indent);
     }
-
-
-
 }
