@@ -155,16 +155,18 @@ Document(
 
 ### Minimal Dependencies
 
-Another goal is to have a minimal set of dependencies, prefereably none.
+Another goal is to have a minimal set of dependencies, preferably none.
 This makes it easy to quickly code up some html without needing a lot of infrastructure in place.
 
 ### First class extensibility
 
 Because we live in the age of custom web elements, extensibility and using custom elements should be easy and not look out-of-place.
 
-The `[Components.TodoList()](./src/Cubist.Helium.Examples/Components.cs) example shows how this works.
+The [Components.TodoList()](./src/Cubist.Helium.Examples/Components.cs) example shows how this works.
 
 By creating static methods that return `Node` instances, and by using `using static <Your custom component class>;` 
+your code looks like it always was a part of the Helium library. 
+Or Helium will look like it was always part of your code... whichever you prefer. :wink:
 
 ## Non-goals
 
