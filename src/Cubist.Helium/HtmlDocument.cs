@@ -4,8 +4,14 @@
 /// </summary>
 public sealed class HtmlDocument : Node
 {
+    /// <summary>
+    /// Creates a new instance of <see cref="HtmlDocument"/>
+    /// </summary>
     public HtmlDocument() : this(He.Head(), He.Body()) { }
 
+    /// <summary>
+    /// Creates a new instance of <see cref="HtmlDocument"/>
+    /// </summary>
     public HtmlDocument(He head, He body)
     {
         if (head.Tag.Value != Tags.Head.Value)
@@ -20,11 +26,16 @@ public sealed class HtmlDocument : Node
         Html.Add(Body);
     }
 
+    /// <summary> The Doctype element </summary>
     public He DocType { get; }
+    /// <summary> The root html element </summary>
     public He Html { get; }
+    /// <summary> The <see cref="Head"/> element is added as a child to the <see cref="Html"/> element</summary>
     public He Head { get; }
+    /// <summary> The <see cref="Body"/> element is added as a child to the <see cref="Html"/> element</summary>
     public He Body { get; }
 
+    /// <inheritdoc cref="Node.WriteTo"/>>
     public override void WriteTo(TextWriter w)
     {
         DocType.WriteTo(w);

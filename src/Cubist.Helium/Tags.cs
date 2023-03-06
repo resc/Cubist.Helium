@@ -1,5 +1,7 @@
 ﻿namespace Cubist.Helium;
 
+
+/// <summary> Contains a list of predefined tag names </summary>
 public static class Tags
 {
     ///<summary> document type declaration </summary>

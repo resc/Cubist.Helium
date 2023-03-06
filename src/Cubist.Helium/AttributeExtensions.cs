@@ -1,5 +1,6 @@
 ﻿namespace Cubist.Helium;
 
+/// <summary> Extension methods for rendering attributes </summary>
 public static class AttributeExtensions
 {
     /// <summary> Use this to wrap an attribute value in single quotes e.g. <c>type='button'</c> </summary>
@@ -8,6 +9,7 @@ public static class AttributeExtensions
     /// <summary> Use this to not wrap an attribute value in quotes e.g. <c>type=button</c> </summary>
     public static object NoQuotes(this object o) => new UnquotedValue(o);
 
+    /// <summary> Writes a formatted attribute to <paramref name="w"/></summary>
     public static void WriteTo(this (string, object?) attr, TextWriter w)
     {
         var (name, value) = attr;

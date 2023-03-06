@@ -3,10 +3,12 @@ using System.Text.Json;
 
 namespace Cubist.Helium;
 
+/// <summary> Extension methods to write formatted and indented html. </summary>
 public static class PrettyPrintExtensions
 {
     private record PrettyPrintContext(bool Indent);
 
+    /// <summary> pretty-prints this node to a string </summary>
     public static string PrettyPrint(this Node n)
     {
         var sw = new StringWriter();
@@ -15,6 +17,7 @@ public static class PrettyPrintExtensions
         return sw.ToString();
     }
 
+    /// <summary> pretty-prints this node to the indent writer </summary>
     public static void PrettyPrintTo(this Node n, IndentWriter w)
         => PrettyPrintNode(n, w);
 
@@ -52,7 +55,7 @@ public static class PrettyPrintExtensions
         var str = JsonSerializer.Serialize(json.Value, options);
         w.WriteLine(str);
     }
- 
+
 
     private static bool IsInline(this Node n)
         => n is CData ||
@@ -113,7 +116,7 @@ public static class PrettyPrintExtensions
 
             foreach (var child in he)
                 PrettyPrintNode(child, w);
-            
+
             if (indent && !allChildrenInline && he.Count > 0 && he.Last().IsInline())
                 w.WriteLine();
         }
@@ -171,6 +174,7 @@ public static class PrettyPrintExtensions
 
     private static readonly ArrayPool<char> _indents = ArrayPool<char>.Create();
 
+    /// <summary> Writes the indent whitespace for the given <paramref name="level"/> </summary>
     public static void WriteIndent(this TextWriter w, int level)
     {
         if (level < 1) return;

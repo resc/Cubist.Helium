@@ -3,13 +3,16 @@
 /// <summary> a html comment: &lt;!-- --&gt; </summary>
 public class Comment : Node
 {
+    /// <summary> Creates a new <see cref="Comment"/> node </summary>
     public Comment(string text)
     {
         Text = text;
     }
 
+    /// <summary> The comment text </summary>
     public string Text { get; }
 
+    /// <inheritdoc cref="Node.WriteTo"/>
     public override void WriteTo(TextWriter w)
     {
         WriteCommentStart(w);
@@ -28,6 +31,7 @@ public class Comment : Node
         WriteCommentEnd(w);
     }
 
+    /// <inheritdoc cref="Node.WriteTo"/>
     public void WriteTo(IndentWriter w)
     {
         WriteCommentStart(w);
@@ -68,12 +72,12 @@ public class Comment : Node
         w.WriteLine();
     }
 
-    public void WriteCommentEnd(TextWriter w)
+    private void WriteCommentEnd(TextWriter w)
     {
         w.Write("-->");
     }
 
-    public void WriteCommentStart(TextWriter w)
+    private void WriteCommentStart(TextWriter w)
     {
         w.Write("<!--");
     }

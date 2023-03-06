@@ -2,6 +2,7 @@
 
 namespace Cubist.Helium;
 
+/// <summary> Represents a html tag name with some extra information. </summary>
 public readonly record struct Tag(string Value, TagOptions Options)
 {
     /// <summary> implicit conversion from a string to a tag, adds TagOptions </summary>

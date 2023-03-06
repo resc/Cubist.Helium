@@ -1,5 +1,6 @@
 ﻿namespace Cubist.Helium;
 
+/// <summary> Information about the category and usage of a <see cref="Tag"/> </summary>
 [Flags]
 public enum TagOptions
 {

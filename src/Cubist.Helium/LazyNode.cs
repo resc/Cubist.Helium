@@ -11,11 +11,13 @@ public sealed class LazyNode<T> : Node
 
     private ICollection<Node> LazyAsCollection => _lazy;
 
+    /// <summary> Creates a new instance of <see cref="LazyNode{T}"/> </summary>
     public LazyNode(Func<T> value)
     {
         _value = value;
     }
 
+    /// <inheritdoc cref="Node.WriteTo"/>>
     public override void WriteTo(TextWriter w)
     {
         var value = _value();

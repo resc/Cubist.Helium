@@ -1,11 +1,14 @@
 ﻿namespace Cubist.Helium;
 
+/// <summary> Extension methods for <see cref="Node"/> </summary>
 public static class NodeExtensions
 {
 
+    /// <summary> Retrieves the descendant nodes of <paramref name="start"/></summary>
     public static IEnumerable<Node> Descendants(this Node start)
         => start.DescendantsAndSelf().Skip(1);
 
+    /// <summary> Retrieves the <paramref name="start"/> <see cref="Node"/> and all descendant nodes </summary>
     public static IEnumerable<Node> DescendantsAndSelf(this Node start)
     {
         var stack = new Stack<Node>();
@@ -23,7 +26,7 @@ public static class NodeExtensions
             }
         }
     }
-
+    /// <summary> Applies <paramref name="apply"/> to all nodes matching <paramref name="match"/> </summary>
     public static void Apply(this Node start, Func<Node, bool> match, Action<Node> apply)
     {
         var stack = new Stack<Node>();
@@ -43,9 +46,7 @@ public static class NodeExtensions
         }
     }
 
-
-
-
+    /// <summary> Writes the node start tag </summary>
     public static void WriteStartTag(this He he, TextWriter w)
     {
         he.Tag.WriteStartBegin(w);
@@ -54,6 +55,7 @@ public static class NodeExtensions
         he.Tag.WriteStartEnd(w);
     }
 
+    /// <summary> Writes the node closing tag if it needs one.</summary>
     public static void WriteCloseTag(this He he, TextWriter w)
     {
         he.Tag.WriteClose(w);

@@ -12,11 +12,13 @@ public partial class He : Node, IList<Node>
 
     private List<(string, object?)>? _attrs;
 
+    /// <summary> Creates a new <see cref="He"/> instance </summary>
     public He(Tag tag)
     {
         Tag = tag;
     }
 
+    /// <summary> Creates a new <see cref="He"/> instance </summary>
     public He(Tag tag, params (string, object?)[] attrs)
     {
         Tag = tag;
@@ -73,6 +75,7 @@ public partial class He : Node, IList<Node>
         return this;
     }
 
+    /// <summary> returns this element's attributes </summary>
     public IEnumerable<(string, object?)> Attrs()
     {
         if (_attrs == null) yield break;
@@ -80,6 +83,7 @@ public partial class He : Node, IList<Node>
             yield return attr;
     }
 
+    /// <inheritdoc cref="Node.WriteTo"/>
     public override void WriteTo(TextWriter w)
     {
         if (_attrs == null || _attrs.Count == 0)
@@ -105,6 +109,7 @@ public partial class He : Node, IList<Node>
             Tag.WriteClose(w);
     }
 
+    /// <inheritdoc cref="IEnumerable{T}.GetEnumerator"/>
     public IEnumerator<Node> GetEnumerator()
     {
         if (_nodes == null) yield break;
@@ -117,6 +122,7 @@ public partial class He : Node, IList<Node>
         return GetEnumerator();
     }
 
+    /// <summary> Adds the content to this element </summary>
     public He Add(IEnumerable content)
     {
         foreach (var c in content)
@@ -125,6 +131,7 @@ public partial class He : Node, IList<Node>
         return this;
     }
 
+    /// <summary> Adds the content to this element </summary>
     public He Add(object? content) => content switch
     {
         Node n => Add(n),
@@ -151,27 +158,35 @@ public partial class He : Node, IList<Node>
             ? Add(content.ToString()!) 
             : Add(new CData($"{content}"));
 
+    /// <summary> Adds the content to this element </summary>
     public He Add(params (string, object?)[] attrs)
         => Attr(attrs);
 
+    /// <summary> Adds the content to this element </summary>
     public He Add((string, object?) attr)
         => Attr(attr);
 
+    /// <summary> Adds the content to this element </summary>
     public He Add(string content)
         => Add(new Text(content));
 
+    /// <summary> Adds the content to this element </summary>
     public He Add(Text content)
         => Add((Node)content);
 
+    /// <summary> Adds the content to this element </summary>
     public He Add(CData content)
         => Add((Node)content);
 
+    /// <summary> Adds the content to this element </summary>
     public He Add(Comment content)
         => Add((Node)content);
 
+    /// <summary> Adds the content to this element </summary>
     public He Add(He content)
         => Add((Node)content);
 
+    /// <summary> Adds the content to this element </summary>
     public He Add(Node content)
     {
         EnsureNotVoid();
