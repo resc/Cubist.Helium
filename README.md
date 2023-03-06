@@ -1,5 +1,7 @@
 # Cubist.Helium
 
+![Build](https://github.com/resc/Cubist.Helium/blob/master/.github/workflows/dotnet.yml/badge.svg?branch=master)
+
 ![Logo By Stable Diffusion](./resources/Cubist.Helium.png)
 
 A small and simple no guardrails html generator library for .NET 6+
@@ -58,7 +60,7 @@ Much better...
 
 ### A little more complicated
 
-Now witness the power of this fully equipped and operational library!
+Now witness the power of this fully equipped and operational library! 
 
 ```C#
 using static Cubist.Helium.He;
