@@ -119,7 +119,7 @@ See `He.Add(object? content)` for the nitty-gritty details.
 
 ## More Examples
 
-For more examples see [Cubist.Helium.Examples](./Cubist.Helium.Examples/README.md).
+For more examples see [Cubist.Helium.Examples](./src/Cubist.Helium.Examples/README.md).
 
 
 # Design and use of the library
@@ -162,7 +162,7 @@ This makes it easy to quickly code up some html without needing a lot of infrast
 
 Because we live in the age of custom web elements, extensibility and using custom elements should be easy and not look out-of-place.
 
-The `[Components.TodoList()](./Cubist.Helium.Examples/Components.cs) example shows how this works.
+The `[Components.TodoList()](./src/Cubist.Helium.Examples/Components.cs) example shows how this works.
 
 By creating static methods that return `Node` instances, and by using `using static <Your custom component class>;` 
 
