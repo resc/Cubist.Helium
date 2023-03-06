@@ -3,7 +3,7 @@
 public static class AttributeExtensions
 {
     /// <summary> Use this to wrap an attribute value in single quotes e.g. <c>type='button'</c> </summary>
-     public static object SingleQuoted(this object o) => new SingleQuotedValue(o);
+    public static object SingleQuoted(this object o) => new SingleQuotedValue(o);
 
     /// <summary> Use this to not wrap an attribute value in quotes e.g. <c>type=button</c> </summary>
     public static object NoQuotes(this object o) => new UnquotedValue(o);
@@ -19,18 +19,26 @@ public static class AttributeExtensions
                 return;
             case SingleQuotedValue sq:
                 w.Write("='");
-                w.Write(sq.Value);
+                WriteValue(w, sq.Value);
                 w.Write("'");
                 break;
             case UnquotedValue uv:
                 w.Write("=");
-                w.Write(uv.Value);
+                WriteValue(w, uv.Value);
                 break;
             default:
                 w.Write("=\"");
-                w.Write(value);
+                WriteValue(w, value);
                 w.Write("\"");
                 break;
         }
+    }
+
+    private static void WriteValue(TextWriter w, object? value)
+    {
+        if (value is Node n)
+            n.WriteTo(w);
+        else
+            w.Write(value);
     }
 }

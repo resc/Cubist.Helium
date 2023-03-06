@@ -7,7 +7,8 @@ using System.Text.Json;
 namespace Cubist.Helium;
 
 /// <summary>
-/// <see cref="He"/> stands for HtmlElement, and also is the element Helium.
+/// <see cref="He"/> is short for HtmlElement, and also the element Helium.
+/// 
 /// </summary>
 public class He : Node, IList<Node>
 {
@@ -15,18 +16,21 @@ public class He : Node, IList<Node>
     private static CultureInfo IC => CultureInfo.InvariantCulture;
     /// <summary>
     /// Use this to create attribute tuples like ("checked", Null)
-    /// to avoid type-inference breakdowns.
+    /// for value-less attributes, to avoid type-inference breakdowns.
     /// </summary> 
     public static object? Null => null;
 
     /// <inheritdoc cref="Tags.DocType"/>
-    public static He DocType() => new He(Tags.DocType).Attr("html");
+    public static He DocType() => new(Tags.DocType, ("html", Null));
 
     /// <summary> Creates an empty document </summary>
     public static HtmlDocument Document() => new();
 
     /// <summary> Creates a document with the given <c>head</c> and <c>body</c> elements </summary>
     public static HtmlDocument Document(He head, He body) => new(head, body);
+
+    /// <inheritdoc cref="Tags.A"/>
+    public static He A(Uri href, params object[] content) => new(Tags.A) { ("href", href), content };
 
     /// <inheritdoc cref="Tags.A"/>
     public static He A(string href, params object[] content) => new(Tags.A) { ("href", href), content };
@@ -115,6 +119,16 @@ public class He : Node, IList<Node>
 
     /// <inheritdoc cref="Comment"/>
     public static Comment Comment(string text) => new(text);
+
+    /// <inheritdoc cref="Helium.Css"/>
+    public static Css Css(string selector, params (string, object?)[] attributes) => new(selector, attributes);
+
+    /// <summary>Creates a class attribute</summary>
+    public static (string, object?) Class(params string[] classes)
+        => Class((IEnumerable<string>)classes);
+
+    /// <summary>Creates a class attribute</summary>
+    public static (string, object?) Class(IEnumerable<string> classes) => ("class", string.Join(" ", classes));
 
     /// <summary> Creates a custom tag </summary>
     public static He Custom(string tag, params object[] content)
@@ -239,6 +253,10 @@ public class He : Node, IList<Node>
         (nameof(id), id),
         attrs,
     };
+
+    /// <summary>creates an inline style attribute</summary>
+    public static (string, object?) InlineStyle(params (string, object?)[] attrs)
+        => ("style", new InlineCss(attrs));
 
     /// <inheritdoc cref="Tags.Ins"/>
     public static He Ins(params object[] content) => new(Tags.Ins) { content };
@@ -447,7 +465,7 @@ public class He : Node, IList<Node>
     public static He Slot(params object[] contents) => new(Tags.Slot) { contents };
 
     /// <inheritdoc cref="Tags.Slot"/>
-    public static He Slot(string name, params object[] contents) => new(Tags.Slot) { (nameof(name), name) ,contents};
+    public static He Slot(string name, params object[] contents) => new(Tags.Slot) { (nameof(name), name), contents };
 
     /// <inheritdoc cref="Tags.Small"/>
     public static He Small(params object[] content) => new(Tags.Small) { content };

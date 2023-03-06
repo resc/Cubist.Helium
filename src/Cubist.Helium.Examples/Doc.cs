@@ -2,12 +2,19 @@
 using System.Text.Json.Nodes;
 using static Cubist.Helium.He;
 
-namespace Cubist.Helium.Examples.Doc ;
+namespace Cubist.Helium.Examples;
 
-[Description("Html document metadata examples")]
-public class Metadata: IExample
+[Description("Full document examples")]
+public static class Doc
 {
-    public Node Render()
+    [Example("A minimal empty html document")]
+    public static Node Minimal()
+        => Document(
+            Head(),
+            Body());
+
+    [Example("Html document metadata example")]
+    public static Node Metadata()
         => Document(
             Head(
                 MetaCharsetUtf8(),

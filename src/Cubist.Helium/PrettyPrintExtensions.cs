@@ -37,7 +37,10 @@ public static class PrettyPrintExtensions
                 cdata.WriteTo(w);
                 break;
             case Comment comment:
-                PrettyPrintComment(comment, w);
+                comment.WriteTo(w);
+                break;
+            case Css css:
+                css.WriteTo(w);
                 break;
             case HtmlDocument doc:
                 PrettyPrintDocument(doc, w);
@@ -51,46 +54,7 @@ public static class PrettyPrintExtensions
         var str = JsonSerializer.Serialize(json.Value, options);
         w.WriteLine(str);
     }
-
-    private static void PrettyPrintComment(Comment comment, IndentWriter w)
-    {
-        comment.WriteCommentStart(w);
-        if (string.IsNullOrEmpty(comment.Text))
-        {
-            w.Write(" ");
-        }
-        else
-        {
-            if (comment.Text.Contains('\n'))
-            {
-                using (w.Indent())
-                {
-                    w.WriteLine();
-                    var text = comment.Text.AsSpan();
-                    while (true)
-                    {
-                        SplitNewline(text, out var line, out text);
-                        w.Write(line);
-                        w.WriteLine();
-                        if (text.IsEmpty)
-                            break;
-                    }
-                }
-            }
-            else
-            {
-                if (!comment.Text.StartsWith(" ", StringComparison.Ordinal))
-                    w.Write(' ');
-
-                w.Write(comment.Text);
-
-                if (!comment.Text.EndsWith(" ", StringComparison.Ordinal))
-                    w.Write(' ');
-            }
-        }
-        comment.WriteCommentEnd(w);
-        w.WriteLine();
-    }
+ 
 
     private static bool IsInline(this Node n)
         => n is CData ||
@@ -102,7 +66,7 @@ public static class PrettyPrintExtensions
     /// Splits <paramref name="s"/> into the first <paramref name="line"/>, and the <paramref name="remaining"/> text after the newline.
     /// Returns true if a newline was found, false if not.
     /// </summary> 
-    private static bool SplitNewline(this ReadOnlySpan<char> s, out ReadOnlySpan<char> line, out ReadOnlySpan<char> remaining)
+    public static bool SplitNewline(this ReadOnlySpan<char> s, out ReadOnlySpan<char> line, out ReadOnlySpan<char> remaining)
     {
         for (int i = 0; i < s.Length; i++)
         {
