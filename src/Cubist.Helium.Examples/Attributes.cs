@@ -39,7 +39,7 @@ public static class Attributes
             "This div has an attribute without a value");
 
     [Example("Setting the style attribute")]
-    public static Node Style()
+    public static Node Styles()
         => Div(
             InlineStyle(
                 ("margin", "1em"),
