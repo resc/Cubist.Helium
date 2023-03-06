@@ -1,6 +1,6 @@
 # Cubist.Helium
 
-![Build](https://github.com/resc/Cubist.Helium/.github/workflows/dotnet.yml/badge.svg?branch=master)
+![Build](https://github.com/resc/Cubist.Helium/actions/workflows/dotnet.yml/badge.svg?branch=master)
 
 ![Logo By Stable Diffusion](./resources/Cubist.Helium.png)
 
