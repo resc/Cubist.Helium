@@ -231,7 +231,7 @@ output:
 #### Or slghtly different...
 
 ```C#
-using static My.Encoders;
+using static My.Encoders.EncodingExtensions;
 using static Cubist.Helium.He;
 
 var html = Div(
