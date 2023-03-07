@@ -228,6 +228,20 @@ output:
 <div data-value="&lt;&#39;&amp;>">A custom element like this: &lt;todo-list&gt;</div>
 ```
 
+#### Or slghtly different...
+
+```C#
+using static My.Encoders;
+using static Cubist.Helium.He;
+
+var html = Div(
+    ("data-value", AttrEncoded("<'&>")), 
+    HtmlEncoded("A custom element like this: <todo-list>")).ToString();
+```
+output:
+```
+<div data-value="&lt;&#39;&amp;>">A custom element like this: &lt;todo-list&gt;</div>
+```
 
 ### Templates, validation methods, model binding and the kitchen sink. 
 
