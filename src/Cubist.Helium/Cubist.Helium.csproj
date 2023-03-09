@@ -4,7 +4,10 @@
 		<TargetFramework>net6.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<IncludeSymbols>True</IncludeSymbols>
+		<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+
 		<Title>$(AssemblyName) Html Generator</Title>
 		<Authors>Remco Schoeman</Authors>
 		<Description>A small and simple no guardrails html generator library for .NET 6+</Description>
@@ -16,25 +19,25 @@
 		<PackageTags>html template generator</PackageTags>
 		<PackageOutputPath>$(OutputPath)</PackageOutputPath>
 		<PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
-		<IncludeSymbols>True</IncludeSymbols>
 		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-		<GenerateDocumentationFile>True</GenerateDocumentationFile>
-		<SymbolPackageFormat>snupkg</SymbolPackageFormat> 
-		<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
-	</PropertyGroup>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<EnablePackageValidation>true</EnablePackageValidation>
 
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-	  <DebugType>portable</DebugType>
+		<DebugType>portable</DebugType>
 	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-	  <DebugType>portable</DebugType>
+ 
+	<PropertyGroup>
+		<MinVerTagPrefix>v</MinVerTagPrefix>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="DotNet.ReproducibleBuilds" Version="1.1.1">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="MinVer" Version="4.3.0">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 	</ItemGroup>
 

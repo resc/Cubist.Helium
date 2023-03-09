@@ -1,6 +1,7 @@
 # Cubist.Helium
 
 ![Build](https://github.com/resc/Cubist.Helium/actions/workflows/dotnet.yml/badge.svg?branch=master)
+![Nuget Package Version](https://img.shields.io/nuget/v/Cubist.Helium)
 
 ![Logo By Stable Diffusion](./resources/Cubist.Helium.png)
 
