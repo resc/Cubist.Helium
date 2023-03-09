@@ -1,39 +1,47 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Title>$(AssemblyName) Html Generator</Title>
-    <Authors>Remco Schoeman</Authors>
-    <Description>A small and simple no guardrails html generator library for .NET 6+</Description>
-    <PackageIcon>Cubist.Helium.png</PackageIcon>
-    <PackageProjectUrl>https://github.com/resc/Cubist.Helium</PackageProjectUrl>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
-    <RepositoryUrl>https://github.com/resc/Cubist.Helium</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <PackageTags>.NET 6 html template generator</PackageTags>
-    <PackageOutputPath>$(OutputPath)</PackageOutputPath>
-    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
-    <IncludeSymbols>True</IncludeSymbols>
-    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-    <GenerateDocumentationFile>True</GenerateDocumentationFile>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<Title>$(AssemblyName) Html Generator</Title>
+		<Authors>Remco Schoeman</Authors>
+		<Description>A small and simple no guardrails html generator library for .NET 6+</Description>
+		<PackageIcon>Cubist.Helium.png</PackageIcon>
+		<PackageProjectUrl>https://github.com/resc/Cubist.Helium</PackageProjectUrl>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<RepositoryUrl>https://github.com/resc/Cubist.Helium</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageTags>html template generator</PackageTags>
+		<PackageOutputPath>$(OutputPath)</PackageOutputPath>
+		<PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+		<IncludeSymbols>True</IncludeSymbols>
+		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat> 
+		<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <None Include="..\..\LICENSE.txt">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-    <None Include="..\..\README.md">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-    <None Include="..\..\resources\Cubist.Helium.png">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-  </ItemGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+	  <DebugType>portable</DebugType>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+	  <DebugType>portable</DebugType>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="DotNet.ReproducibleBuilds" Version="1.1.1">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="..\..\LICENSE.txt" Pack="True" PackagePath="\" />
+		<None Include="..\..\README.md" Pack="True" PackagePath="\" />
+		<None Include="..\..\resources\Cubist.Helium.png" Pack="True" PackagePath="\" />
+	</ItemGroup>
 
 </Project>
