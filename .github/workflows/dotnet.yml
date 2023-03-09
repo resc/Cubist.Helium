@@ -4,11 +4,16 @@
 name: .NET
 
 on:   
+  workflow_dispatch: # Allow running the workflow manually from the GitHub UI
   push:
     branches: [ "master" ]
   pull_request:
-    branches: [ "master" ]         
-
+    branches: [ "master" ]      
+    
+env:
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+  DOTNET_NOLOGO: true 
+  
 jobs:
   build:
 
@@ -26,3 +31,9 @@ jobs:
       run: dotnet build ./src --no-restore
     - name: Test
       run: dotnet test ./src --no-build --verbosity normal
+    - name: Publish NuGet package
+      run: |
+        foreach($file in (Get-ChildItem "./src" -Recurse -Include *.nupkg)) {
+            dotnet nuget push $file --api-key "${{ secrets.NUGET_APIKEY }}" --source https://api.nuget.org/v3/index.json --skip-duplicate
+        }
+     
