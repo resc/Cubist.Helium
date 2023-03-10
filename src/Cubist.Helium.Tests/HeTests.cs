@@ -54,4 +54,41 @@ public class HeTests
         _output.WriteLine(html);
         Assert.Equal(@"<script type=""importmap"">{""import"":{""name"":""./path/to/module""}}</script>", html);
     }
+
+
+
+
+    [Fact]
+    public void CanRenderConditionalFalse()
+    {
+        var hasClass = false;
+        var div = Div(If(hasClass, Class("class")));
+
+        var html = div.ToString();
+        _output.WriteLine(html);
+        Assert.Equal("<div></div>", html);
+
+    }
+
+    [Fact]
+    public void CanRenderConditionalTrue()
+    {
+        var hasClass = true;
+        var div = Div(If(hasClass, Class("class")));
+
+        var html = div.ToString();
+        _output.WriteLine(html);
+        Assert.Equal("<div class=\"class\"></div>", html);
+    }
+
+    [Fact]
+    public void CanRenderConditionalTrueFunctionContent()
+    {
+        var hasClass = true;
+        var div = Div(If(hasClass,()=> Class("class")));
+
+        var html = div.ToString();
+        _output.WriteLine(html);
+        Assert.Equal("<div class=\"class\"></div>", html);
+    }
 }

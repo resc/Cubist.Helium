@@ -227,6 +227,22 @@ public partial class He
     /// <inheritdoc cref="Tags.I"/>
     public static He I(params object[] content) => new(Tags.I) { content };
 
+    /// <inheritdoc cref="Conditional"/>
+    public static object If(bool condition, params object[] content)
+        => If(() => condition, content);
+
+    /// <inheritdoc cref="Conditional"/>
+    public static object If(Func<bool> condition, params object[] content)
+        => new Conditional(condition, () => content);
+
+    /// <inheritdoc cref="Conditional"/>
+    public static object If<T>(bool condition, Func<T> content) where T : notnull
+        => If(() => condition, content);
+
+    /// <inheritdoc cref="Conditional"/>
+    public static object If<T>(Func<bool> condition, Func<T> content) where T : notnull
+        => new Conditional(condition, () => content());
+
     /// <inheritdoc cref="Tags.Iframe"/>
     public static He Iframe(string title, string src) => new(Tags.Iframe)
     {
