@@ -85,7 +85,7 @@ public class HeTests
     public void CanRenderConditionalTrueFunctionContent()
     {
         var hasClass = true;
-        var div = Div(If(hasClass,()=> Class("class")));
+        var div = Div(If(hasClass, () => Class("class")));
 
         var html = div.ToString();
         _output.WriteLine(html);
