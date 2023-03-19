@@ -28,8 +28,8 @@ public class Css : Node
         w.Write("} ");
     }
 
-    /// <inheritdoc cref="Node.WriteTo"/>
-    public void WriteTo(IndentWriter w)
+    /// <inheritdoc cref="Node.PrettyPrintTo"/>>
+    public override void PrettyPrintTo(IndentWriter w)
     {
         w.Write(Selector);
         w.Write(@" {");

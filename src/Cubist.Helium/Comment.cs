@@ -31,8 +31,8 @@ public class Comment : Node
         WriteCommentEnd(w);
     }
 
-    /// <inheritdoc cref="Node.WriteTo"/>
-    public void WriteTo(IndentWriter w)
+    /// <inheritdoc cref="Node.PrettyPrintTo"/>>
+    public override void PrettyPrintTo(IndentWriter w)
     {
         WriteCommentStart(w);
         if (string.IsNullOrEmpty(Text))

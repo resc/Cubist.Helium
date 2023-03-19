@@ -41,4 +41,44 @@ public sealed class HtmlDocument : Node
         DocType.WriteTo(w);
         Html.WriteTo(w);
     }
+
+    /// <inheritdoc cref="Node.PrettyPrintTo"/>>
+    public override void PrettyPrintTo(IndentWriter w)
+    {
+        DocType.PrettyPrintTo(w);
+        Html.WriteStartTag(w);
+
+        w.WriteLine();
+        Head.WriteStartTag(w);
+        w.WriteLine();
+
+        using (w.Indent())
+        {
+            foreach (var child in Head)
+            {
+                child.PrettyPrintTo(w);
+                if (child is He e && e.Tag.IsVoid())
+                    w.WriteLine();
+            }
+        }
+
+        Head.WriteCloseTag(w);
+        w.WriteLine();
+
+        Body.WriteStartTag(w);
+        w.WriteLine();
+
+        using (w.Indent())
+        {
+            foreach (var child in Body)
+            {
+                child.PrettyPrintTo(w);
+            }
+        }
+
+        Body.WriteCloseTag(w);
+        w.WriteLine();
+
+        Html.WriteCloseTag(w);
+    }
 }

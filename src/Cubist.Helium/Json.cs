@@ -29,4 +29,12 @@ public class Json : Node
         var json = JsonSerializer.Serialize(Value, Options);
         w.Write(json);
     }
+
+    /// <inheritdoc cref="Node.PrettyPrintTo"/>>
+    public override void PrettyPrintTo(IndentWriter w)
+    {
+        var options = new JsonSerializerOptions(Options) { WriteIndented = true };
+        var str = JsonSerializer.Serialize(Value, options);
+        w.WriteLine(str);
+    }
 }

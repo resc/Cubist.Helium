@@ -3,7 +3,7 @@
 namespace Cubist.Helium;
 
 /// <summary> the element tree base class </summary>
-public abstract class Node
+public abstract class Node 
 {
     /// <summary> Attach user data to this node, You can use this field to find nodes in the element tree </summary>
     public object? UserData { get; init; } = null;
@@ -18,4 +18,7 @@ public abstract class Node
         WriteTo(sw);
         return sw.ToString();
     }
+
+    /// <summary> Writes this node indented to the output </summary>
+    public virtual void PrettyPrintTo(IndentWriter w) => WriteTo(w);
 }

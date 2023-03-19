@@ -62,7 +62,7 @@ public partial class He : Node, IList<Node>
     {
         foreach (var (name, value) in attrs)
             Attr(name, value);
-        
+
         return this;
     }
 
@@ -107,6 +107,34 @@ public partial class He : Node, IList<Node>
 
         if (!Tag.IsVoid())
             Tag.WriteClose(w);
+    }
+
+    /// <inheritdoc cref="Node.PrettyPrintTo"/>>
+    public override void PrettyPrintTo(IndentWriter w)
+    {
+        var indent = !this.IsInline();
+
+        this.WriteStartTag(w);
+
+        var allChildrenInline = this.All(n => n.IsInline());
+        using (w.Indent())
+        {
+            if (indent && !allChildrenInline)
+                w.WriteLine();
+
+            foreach (var child in this)
+                child.PrettyPrintTo(w);
+
+            if (indent && !allChildrenInline && this.Count > 0 && this.Last().IsInline())
+                w.WriteLine();
+        }
+
+
+        if (!Tag.IsVoid())
+            this.WriteCloseTag(w);
+
+        if (indent)
+            w.WriteLine();
     }
 
     /// <inheritdoc cref="IEnumerable{T}.GetEnumerator"/>
@@ -154,8 +182,8 @@ public partial class He : Node, IList<Node>
     }
 
     private He AddOther(object content) =>
-        content.GetType().IsPrimitive 
-            ? Add(content.ToString()!) 
+        content.GetType().IsPrimitive
+            ? Add(content.ToString()!)
             : Add(new CData($"{content}"));
 
     /// <summary> Adds the content to this element </summary>

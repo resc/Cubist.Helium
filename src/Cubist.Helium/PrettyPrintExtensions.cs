@@ -1,63 +1,21 @@
 ﻿using System.Buffers;
-using System.Text.Json;
 
 namespace Cubist.Helium;
 
 /// <summary> Extension methods to write formatted and indented html. </summary>
 public static class PrettyPrintExtensions
 {
-    private record PrettyPrintContext(bool Indent);
-
     /// <summary> pretty-prints this node to a string </summary>
     public static string PrettyPrint(this Node n)
     {
-        var sw = new StringWriter();
-        var indent = new IndentWriter(sw);
-        PrettyPrintNode(n, indent);
+        using var sw = new StringWriter();
+        using var iw = new IndentWriter(sw);
+        n.PrettyPrintTo(iw);
         return sw.ToString();
     }
 
-    /// <summary> pretty-prints this node to the indent writer </summary>
-    public static void PrettyPrintTo(this Node n, IndentWriter w)
-        => PrettyPrintNode(n, w);
-
-    private static void PrettyPrintNode(Node n, IndentWriter w)
-    {
-        switch (n)
-        {
-            case He he:
-                PrettyPrintElement(he, w);
-                break;
-            case Text text:
-                text.WriteTo(w);
-                break;
-            case Json json:
-                PrettyPrintJson(json, w);
-                break;
-            case CData cdata:
-                cdata.WriteTo(w);
-                break;
-            case Comment comment:
-                comment.WriteTo(w);
-                break;
-            case Css css:
-                css.WriteTo(w);
-                break;
-            case HtmlDocument doc:
-                PrettyPrintDocument(doc, w);
-                break;
-        }
-    }
-
-    private static void PrettyPrintJson(Json json, IndentWriter w)
-    {
-        var options = new JsonSerializerOptions(json.Options) { WriteIndented = true };
-        var str = JsonSerializer.Serialize(json.Value, options);
-        w.WriteLine(str);
-    }
-
-
-    private static bool IsInline(this Node n)
+    /// <summary> Returns true if this is an inline node, with only inline child nodes </summary>
+    public static bool IsInline(this Node n)
         => n is CData ||
            (n is Text t && !t.Value.Contains('\n')) ||
            (n is He he && he.Tag.IsInline() &&
@@ -100,76 +58,6 @@ public static class PrettyPrintExtensions
         line = s;
         remaining = Span<char>.Empty;
         return false;
-    }
-
-    private static void PrettyPrintElement(He he, IndentWriter w)
-    {
-        var indent = !he.IsInline();
-
-        he.WriteStartTag(w);
-
-        var allChildrenInline = he.All(n => n.IsInline());
-        using (w.Indent())
-        {
-            if (indent && !allChildrenInline)
-                w.WriteLine();
-
-            foreach (var child in he)
-                PrettyPrintNode(child, w);
-
-            if (indent && !allChildrenInline && he.Count > 0 && he.Last().IsInline())
-                w.WriteLine();
-        }
-
-
-        if (!he.Tag.IsVoid())
-        {
-            he.WriteCloseTag(w);
-
-        }
-        if (indent)
-            w.WriteLine();
-
-    }
-
-    private static void PrettyPrintDocument(HtmlDocument doc, IndentWriter w)
-    {
-        doc.DocType.WriteTo(w);
-        w.WriteLine();
-        doc.Html.WriteStartTag(w);
-
-        w.WriteLine();
-        doc.Head.WriteStartTag(w);
-        w.WriteLine();
-
-        using (w.Indent())
-        {
-            foreach (var child in doc.Head)
-            {
-                PrettyPrintNode(child, w);
-                if (child is He e && e.Tag.IsVoid())
-                    w.WriteLine();
-            }
-        }
-
-        doc.Head.WriteCloseTag(w);
-        w.WriteLine();
-
-        doc.Body.WriteStartTag(w);
-        w.WriteLine();
-
-        using (w.Indent())
-        {
-            foreach (var child in doc.Body)
-            {
-                PrettyPrintNode(child, w);
-            }
-        }
-
-        doc.Body.WriteCloseTag(w);
-        w.WriteLine();
-
-        doc.Html.WriteCloseTag(w);
     }
 
     private static readonly ArrayPool<char> _indents = ArrayPool<char>.Create();
