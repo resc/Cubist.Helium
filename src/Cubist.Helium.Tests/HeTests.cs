@@ -37,6 +37,59 @@ public class HeTests
         _output.WriteLine(html);
         Assert.Equal("{\"text\":\"some text\",\"bool\":true}", html);
     }
+
+    [Fact]
+    public void CanRenderTemplateNode()
+    {
+        var tt = new TextTemplate();
+        var link = A("#text", tt);
+
+
+        var html = link.ToString();
+        _output.WriteLine(html);
+        Assert.Equal("<a href=\"#text\"></a>", html);
+
+        tt.Text = "Some Text";
+        var html2 = link.ToString();
+        _output.WriteLine(html2);
+        Assert.Equal("<a href=\"#text\">Some Text</a>", html2);
+    }
+
+    [Fact]
+    public void CanRenderTemplateNodeAsAttributeValue()
+    {
+        var tt = new TextTemplate();
+        var link = Div(("class", tt));
+
+
+        var html = link.ToString();
+        _output.WriteLine(html);
+        Assert.Equal("<div class=\"\"></div>", html);
+
+        tt.Text = "myClass";
+        var html2 = link.ToString();
+        _output.WriteLine(html2);
+        Assert.Equal("<div class=\"myClass\"></div>", html2);
+    }
+
+    private class TextTemplate : ITemplate
+    {
+        private string _text = "";
+        private Text _cachedNode = Text("");
+
+        public string Text
+        {
+            get => _text;
+            set
+            {
+                _text = value;
+                _cachedNode = Text(value);
+            }
+        }
+
+        public Node Render() => _cachedNode;
+    }
+
     [Fact]
     public void CanRenderImportMap()
     {

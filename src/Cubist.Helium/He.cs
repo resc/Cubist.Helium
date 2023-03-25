@@ -52,7 +52,11 @@ public partial class He : Node, IList<Node>
             throw new ArgumentException("name cannot be null or empty.", nameof(name));
 
         _attrs ??= new();
-        _attrs.Add((name, value));
+        _attrs.Add((name, value switch
+        {
+            ITemplate t => new Template(t),
+            _ => value
+        }));
         return this;
     }
 
@@ -165,6 +169,7 @@ public partial class He : Node, IList<Node>
         Node n => Add(n),
         string s => Add(s),
         ITuple { Length: 2 } tuple => Attr(tuple[0] as string ?? $"{tuple[0]}", tuple[1]),
+        ITemplate t => Add(new Template(t)),
         JsonNode json => Add(Json(json)),
         IEnumerable nodes => AddRange(nodes),
         bool boolValue => Add(boolValue.ToString()),
