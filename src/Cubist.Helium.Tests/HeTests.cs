@@ -59,15 +59,15 @@ public class HeTests
     public void CanRenderTemplateNodeAsAttributeValue()
     {
         var tt = new TextTemplate();
-        var link = Div(("class", tt));
+        var div = Div(("class", tt));
 
 
-        var html = link.ToString();
+        var html = div.ToString();
         _output.WriteLine(html);
         Assert.Equal("<div class=\"\"></div>", html);
 
         tt.Text = "myClass";
-        var html2 = link.ToString();
+        var html2 = div.ToString();
         _output.WriteLine(html2);
         Assert.Equal("<div class=\"myClass\"></div>", html2);
     }

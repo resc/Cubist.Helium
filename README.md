@@ -248,6 +248,9 @@ output:
 
 If you want that, [ASP.NET](https://learn.microsoft.com/en-us/aspnet/core/) has you covered.
 
+There is some basic DIY template support (see the `ITemplate` interface), but it's not a goal to make this a full-blown templating engine.
+
+
 ### Performance 
 
 Nope, isn't a goal. Although it should be as fast as possible while still using 
