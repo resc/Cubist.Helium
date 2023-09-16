@@ -75,7 +75,10 @@ public class HeTests
     {
         var list = List(("id", "test"), P("test"));
         Assert.Equal("<p>test</p>", list.ToString());
-        Assert.Equal("<p>test</p>\r\n", list.PrettyPrint());
+        Assert.Equal("""
+          <p>test</p>
+          
+          """, list.PrettyPrint());
     }
 
     [Fact]
