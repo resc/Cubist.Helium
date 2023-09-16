@@ -24,6 +24,7 @@
 		<EnablePackageValidation>true</EnablePackageValidation>
 
 		<DebugType>portable</DebugType>
+		<LangVersion>11</LangVersion>
 	</PropertyGroup>
  
 	<PropertyGroup>

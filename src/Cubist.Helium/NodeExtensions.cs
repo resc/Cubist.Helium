@@ -49,15 +49,22 @@ public static class NodeExtensions
     /// <summary> Writes the node start tag </summary>
     public static void WriteStartTag(this He he, TextWriter w)
     {
+        if (he.Tag == Tag.Empty) return;
+
         he.Tag.WriteStartBegin(w);
-        foreach (var attr in he.Attrs())
-            attr.WriteTo(w);
+        if (he.AttrCount > 0)
+        {
+            foreach (var attr in he.Attrs())
+                attr.WriteTo(w);
+        }
         he.Tag.WriteStartEnd(w);
     }
 
     /// <summary> Writes the node closing tag if it needs one.</summary>
     public static void WriteCloseTag(this He he, TextWriter w)
     {
+        if (he.Tag == Tag.Empty) return;
+
         he.Tag.WriteClose(w);
     }
 }

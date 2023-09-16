@@ -79,7 +79,10 @@ public partial class He : Node, IList<Node>
         return this;
     }
 
-    /// <summary> returns this element's attributes </summary>
+    /// <summary>  Returns the number of attributes on this element. </summary>
+    internal int AttrCount => _attrs?.Count ?? 0;
+
+    /// <summary> Returns this element's attributes </summary>
     public IEnumerable<(string, object?)> Attrs()
     {
         if (_attrs == null) yield break;
@@ -90,18 +93,7 @@ public partial class He : Node, IList<Node>
     /// <inheritdoc cref="Node.WriteTo"/>
     public override void WriteTo(TextWriter w)
     {
-        if (_attrs == null || _attrs.Count == 0)
-        {
-            Tag.WriteStart(w);
-        }
-        else
-        {
-            Tag.WriteStartBegin(w);
-            foreach (var attr in _attrs)
-                attr.WriteTo(w);
-
-            Tag.WriteStartEnd(w);
-        }
+        this.WriteStartTag(w);
 
         if (_nodes != null)
         {
@@ -109,8 +101,7 @@ public partial class He : Node, IList<Node>
                 node.WriteTo(w);
         }
 
-        if (!Tag.IsVoid())
-            Tag.WriteClose(w);
+        this.WriteCloseTag(w);
     }
 
     /// <inheritdoc cref="Node.PrettyPrintTo"/>>
@@ -121,23 +112,24 @@ public partial class He : Node, IList<Node>
         this.WriteStartTag(w);
 
         var allChildrenInline = this.All(n => n.IsInline());
-        using (w.Indent())
-        {
-            if (indent && !allChildrenInline)
-                w.WriteLine();
 
-            foreach (var child in this)
-                child.PrettyPrintTo(w);
+        bool isEmptyTag = Tag == Tag.Empty;
+        var indentBlock = isEmptyTag ? IndentWriter.IndentBlock.Empty : w.Indent();
 
-            if (indent && !allChildrenInline && this.Count > 0 && this.Last().IsInline())
-                w.WriteLine();
-        }
+        if (indent && !allChildrenInline && !isEmptyTag)
+            w.WriteLine();
 
+        foreach (var child in this)
+            child.PrettyPrintTo(w);
 
-        if (!Tag.IsVoid())
-            this.WriteCloseTag(w);
+        if (indent && !allChildrenInline && this.Count > 0 && this.Last().IsInline())
+            w.WriteLine();
 
-        if (indent)
+        indentBlock.Dispose();
+
+        this.WriteCloseTag(w);
+
+        if (indent && !isEmptyTag)
             w.WriteLine();
     }
 

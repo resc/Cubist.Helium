@@ -95,7 +95,17 @@ public class IndentWriter : TextWriter
     /// <summary> Represent a indentation level </summary>
     public struct IndentBlock : IDisposable
     {
+
+        /// <summary> An empty <see cref="IndentBlock"/> value</summary>
+        public static  IndentBlock Empty { get; } = new();
+
         private IndentWriter? _w;
+
+        /// <summary> Creates an empty <see cref="IndentBlock"/> value</summary>
+        public IndentBlock()
+        {
+            _w = null;
+        }
 
         /// <summary> Creates a <see cref="IndentBlock"/> value</summary>
         public IndentBlock(IndentWriter w)

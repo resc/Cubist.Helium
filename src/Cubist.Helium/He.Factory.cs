@@ -575,4 +575,7 @@ public partial class He
 
     /// <inheritdoc cref="Tags.Wbr"/>
     public static He Wbr() => new(Tags.Wbr);
+
+    /// <summary> A container for nodes, only prints the contained nodes, ignores any added attributes. </summary>
+    public static He List(params object[] content) => new(Tag.Empty) { content };
 }

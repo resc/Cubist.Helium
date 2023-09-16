@@ -5,12 +5,18 @@ namespace Cubist.Helium;
 /// <summary> Represents a html tag name with some extra information. </summary>
 public readonly record struct Tag(string Value, TagOptions Options)
 {
+    /// <summary> The empty tag that will not render </summary>
+    public static Tag Empty => new(string.Empty, TagOptions.None);
+
     /// <summary> implicit conversion from a string to a tag, adds TagOptions </summary>
     public static implicit operator Tag(string s) => new(s, GetOption(s));
 
     /// <summary> Writes the start tag.  <c>&lt;{tag}&gt;</c> </summary>
     public void WriteStart(TextWriter w)
     {
+        if (string.IsNullOrEmpty(Value)) 
+            return;
+
         WriteStartBegin(w);
         WriteStartEnd(w);
     }
@@ -18,6 +24,9 @@ public readonly record struct Tag(string Value, TagOptions Options)
     /// <summary> Writes the start tag begin <c>&lt;{tag}</c> so that attributes can be written. </summary>
     public void WriteStartBegin(TextWriter w)
     {
+        if (string.IsNullOrEmpty(Value)) 
+            return;
+
         w.Write('<');
         WriteTag(w);
     }
@@ -33,12 +42,14 @@ public readonly record struct Tag(string Value, TagOptions Options)
     /// <summary> Writes the start tag's closing <c>&gt;</c> character. </summary>
     public void WriteStartEnd(TextWriter w)
     {
+        if (string.IsNullOrEmpty(Value)) return;
         w.Write(">");
     }
 
     /// <summary> Writes the close tag <c>&lt;/{tag}&gt;</c>. </summary>
     public void WriteClose(TextWriter w)
     {
+        if (string.IsNullOrEmpty(Value)) return;
         if (this.IsVoid()) return;
         w.Write("</");
         WriteTag(w);
@@ -78,7 +89,7 @@ public readonly record struct Tag(string Value, TagOptions Options)
     {
         "h1","h2","h3","h4","h5","h6"
     };
-    
+
     /// <summary> See https://html.spec.whatwg.org/multipage/dom.html#phrasing-content </summary>
     private static readonly IReadOnlySet<string> _phrasingContent = new HashSet<string>
     {

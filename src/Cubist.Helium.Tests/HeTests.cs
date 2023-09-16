@@ -14,6 +14,71 @@ public class HeTests
     }
 
     [Fact]
+    public void CanConstructList()
+    {
+        var list = List(P("one"), P("two"), P("three"));
+        var html = list.ToString();
+        _output.WriteLine(html);
+        Assert.Equal("<p>one</p><p>two</p><p>three</p>", html);
+    }
+
+    [Fact]
+    public void CanConstructListPrettyPrinted()
+    {
+        var list = List(P("one"), P("two"), P("three"));
+        var html = list.PrettyPrint();
+        _output.WriteLine(html);
+        Assert.Equal("""
+        <p>one</p>
+        <p>two</p>
+        <p>three</p>
+
+        """, html);
+    }
+    [Fact]
+    public void CanConstructListInDivPrettyPrinted()
+    {
+        var list = Div(List(P("one"), P("two"), P("three")));
+        var html = list.PrettyPrint();
+        _output.WriteLine(html);
+        Assert.Equal("""
+        <div>
+          <p>one</p>
+          <p>two</p>
+          <p>three</p>
+        </div>
+        
+        """, html);
+    }
+
+    [Fact]
+    public void CanConstructListInSpanPrettyPrinted()
+    {
+        var list = Span(List(Span("one"), Span("two"), Span("three")));
+        var html = list.PrettyPrint();
+        _output.WriteLine(html);
+        Assert.Equal("""
+        <span><span>one</span><span>two</span><span>three</span></span>
+        """, html);
+    }
+
+    [Fact]
+    public void ListIgnoresAttributes()
+    {
+        var list = List(("id", "test"));
+        Assert.Equal(string.Empty, list.ToString());
+        Assert.Equal(string.Empty, list.PrettyPrint());
+    }
+
+    [Fact]
+    public void ListIgnoresAttributesWithChildTag()
+    {
+        var list = List(("id", "test"), P("test"));
+        Assert.Equal("<p>test</p>", list.ToString());
+        Assert.Equal("<p>test</p>\r\n", list.PrettyPrint());
+    }
+
+    [Fact]
     public void CanConstructMetaElement()
     {
         var meta = Meta("keywords", "test, library");
@@ -21,7 +86,6 @@ public class HeTests
         var html = meta.ToString();
         _output.WriteLine(html);
         Assert.Equal("<meta name=\"keywords\" content=\"test, library\">", html);
-
     }
 
     [Fact]

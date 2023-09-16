@@ -18,7 +18,7 @@ public static class PrettyPrintExtensions
     public static bool IsInline(this Node n)
         => n is CData ||
            (n is Text t && !t.Value.Contains('\n')) ||
-           (n is He he && he.Tag.IsInline() &&
+           (n is He he && (he.Tag.IsInline() || he.Tag==Tag.Empty) &&
             he.All(child => child.IsInline()));
 
     /// <summary>
